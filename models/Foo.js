@@ -10,6 +10,5 @@ const fooSchema = mongoose.Schema(
   }
 );
 //Create and export model
-
 const Foo = mongoose.model("Foo",fooSchema)
 module.exports = Foo
