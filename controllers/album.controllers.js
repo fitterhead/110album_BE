@@ -26,14 +26,18 @@ albumController.createAlbum = async (req, res, next) => {
 
 /* ------------------------------ get all Album ------------------------------ */
 albumController.getAllAlbums = async (req, res, next) => {
-  const filter = req.body;
+  // const filter = req.body;
   console.log("req", req);
-  // const query = req.query;
+  const { limit, page, filter } = req.query;
   // query ? (filter = { "_id": `${query}` }) : (filter = req.body);
-
   // example: {"artistName":"Radiohead"}
+  const newFilter = {};
+  if (filter) newFilter = JSON.parse(filter);
+  console.log("limit", limit);
+  console.log("page", page);
+  console.log("filter", typeof filter);
   try {
-    const listOfAlbum = await Album.find(filter).populate(
+    const listOfAlbum = await Album.find(newFilter).populate(
       "artistRef",
       "artistName"
     );
