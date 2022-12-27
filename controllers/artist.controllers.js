@@ -31,10 +31,19 @@ artistController.createArtist = async (req, res, next) => {
 
 /* ------------------------------ get all Artist ------------------------------ */
 artistController.getAllArtists = async (req, res, next) => {
-  const filter = {};
+  let { page, limit, filter } = req.query;
+  // console.log("page",page)
+  // console.log("limit",limit)
+  // console.log("filter",filter)
+  page = parseInt(page) || 1;
+  limit = parseInt(limit) || 10;
+  let newFilter = {};
+  if (filter) newFilter = JSON.parse(filter);
+  let offset = limit * (page - 1);
 
   try {
-    const listOfArtist = await Artist.find(filter);
+    let listOfArtist = await Artist.find(newFilter);
+    listOfArtist = listOfArtist.slice(offset, offset + limit);
     sendResponse(
       res,
       200,
