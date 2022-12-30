@@ -4,7 +4,6 @@ const Playlist = require("../models/Playlist.js");
 /* ------------------------------- create Playlist ------------------------------ */
 const playlistController = {};
 playlistController.createPlaylist = async (req, res, next) => {
-//   console.log("insideReq", req);
   const playlistInput = req.body;
   try {
     if (!playlistInput)
@@ -29,7 +28,7 @@ playlistController.getAllPlaylists = async (req, res, next) => {
   console.log("insideReq", req);
 
   try {
-    const listOfPlaylist = await Playlist.find(filter);
+    const listOfPlaylist = await Playlist.find(filter).populate("albumRef");
     sendResponse(
       res,
       200,
@@ -45,16 +44,13 @@ playlistController.getAllPlaylists = async (req, res, next) => {
 
 /* ------------------------------- update Playlist ------------------------------ */
 playlistController.updatePlaylistById = async (req, res, next) => {
-  //in real project you will getting id from req. For updating and deleting, it is recommended for you to use unique identifier such as _id to avoid duplication
-  //you will also get updateInfo from req
-  // empty target and info mean update nothing
-
-  // const targetId = null;
-  // console.log("insideReq", req);
   const targetId = req.params;
-  const updateInfo = "";
-  //options allow you to modify query. e.g new true return lastest update of data
-  const options = { new: true };
+  //63a7dcd9104af1c06b8b2482
+  const albumAdded = req.body;
+  console.log("albumAdded", req.body);
+  //{"_id":"63a3df92aba421e4cd7301b6"}
+  const updateInfo = { $push: { albumRef: albumAdded } };
+  const options = { new: true, upsert: true };
   try {
     //mongoose query
     const updated = await Playlist.findByIdAndUpdate(

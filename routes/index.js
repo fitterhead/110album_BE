@@ -53,5 +53,9 @@ router.use("/artist", artistRouter);
 const playlistRouter = require("./playlist.api.js");
 router.use("/playlist", playlistRouter);
 
+/* ------------------------------- authRouter ------------------------------- */
+const authenRouter = require("./auth.api.js");
+router.use("/auth", authenRouter);
+
 /* --------------------------------- export --------------------------------- */
 module.exports = router;

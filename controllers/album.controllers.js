@@ -159,3 +159,22 @@ albumController.getAllGenre = async (req, res, next) => {
 /* --------------------------------- export --------------------------------- */
 
 module.exports = albumController;
+
+
+
+// const [listAllAlbum, setListAllAlbum] = useState([]); //array rong
+// const [albumRating, setAlbumRating] = useState(null); //object rỗng
+
+// useEffect(() => {
+//   if (listAlbum && listAlbum.length > 0) {
+//     // neu listALbum ton tai va co gia tri
+//     setListAllAlbum(listAlbum);
+//     if (listAllAlbum[listAllAlbum.length - 1]) {
+//       const rate = listAllAlbum[listAllAlbum.length - 1];
+//       //neu rate ton tai va data.data cua no co ton tai va data dau tien co gia tri
+//       if (rate?.data?.data && rate?.data?.data[0]) {
+//         setAlbumRating(rate?.data?.data[0]);
+//       }
+//     }
+//   }
+// }, [listAlbum]);

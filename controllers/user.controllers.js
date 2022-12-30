@@ -1,25 +1,40 @@
 const { sendResponse, AppError } = require("../helpers/utils.js");
 const User = require("../models/User.js");
+const bcrypt = require("bcrypt");
 
-/* ------------------------------- create User ------------------------------ */
+/* -------------------------------------------------------------------------- */
+/*                                register user                               */
+/* -------------------------------------------------------------------------- */
 const userController = {};
 userController.createUser = async (req, res, next) => {
-  // const signinInput = {
-  //   username: "foo",
-  //   email: "yeezy@gmail.com",
-  //   password: "qwerty",
-  // };
-  console.log("insideReq", req);
+  /* -------------------------------- 1.getdata ------------------------------- */
   const signinInput = req.body;
+  let { email, password, username } = signinInput;
+
   try {
-    if (!signinInput)
+    /* ---------------------- 2. business Logic validation ---------------------- */
+    let existingUser = await User.findOne({ email });
+    if (!signinInput || existingUser)
       throw new AppError(402, "Bad Request", "Create user Error");
-    const created = await User.create(signinInput);
+    // const created = await User.create(signinInput);
+
+    /* ------------------------------- 3. Process ------------------------------- */
+    //bcrypt process
+    const salt = await bcrypt.genSalt(10);
+    password = await bcrypt.hash(password, salt);
+    const created = await User.create({ email, password, username });
+
+    /* ------ tự động login người dùng sau khi đã tạo tài khoản thành công ------ */
+    // mỗi lần cần lấy accesstoken thì chạy function để tạo token đó ra , rồi gửi token đó cho
+    //front end bằng sendResponse
+    const accessToken = await created.generateToken();
+
+    /* ------------------------------- 4.response ------------------------------- */
     sendResponse(
       res,
       200,
       true,
-      { data: created },
+      { data: created, accessToken: accessToken },
       null,
       "Signin user Success"
     );
@@ -109,7 +124,6 @@ userController.deleteUserById = async (req, res, next) => {
 /* --------------------------------- export --------------------------------- */
 
 module.exports = userController;
-
 
 /* ------------------------------- soft delete ------------------------------ */
 
