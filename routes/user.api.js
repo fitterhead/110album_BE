@@ -10,21 +10,25 @@ const {
   updateUserById,
   getAllUsers,
 } = require("../controllers/user.controllers.js");
+const authentication = require("../helpers/middlewares/authentication.js");
 
 
 /* ---------------------------------- Read ---------------------------------- */
 /**
  * @route GET api/user
  * @description get list of users
- * @access public
+ * @access login required
+
  */
-router.get("/", getAllUsers);
+router.get("/", authentication.loginRequired, getAllUsers);
+// router.get("/", getAllUsers);
 
 /* --------------------------------- Create --------------------------------- */
 /**
  * @route POST api/user
  * @description create new user
- * @access public
+ * @access login required
+
   * @req_body  {
   "username": "phi",
   "email": "morita@gmail.com",
@@ -47,15 +51,17 @@ router.post(
 /**
  * @route PUT api/user
  * @description create new user
- * @access public
+ * @access login required
+
  */
-router.put("/:id", updateUserById);
+router.put("/:id", authentication.loginRequired, updateUserById);
 /* --------------------------------- Delete --------------------------------- */
 /**
  * @route DELETE api/user
  * @description create new user
- * @access public
+ * @access login required
+
  */
-router.delete("/:id", deleteUserById);
+router.delete("/:id", authentication.loginRequired, deleteUserById);
 
 module.exports = router;

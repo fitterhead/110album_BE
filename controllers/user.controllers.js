@@ -45,9 +45,11 @@ userController.createUser = async (req, res, next) => {
 
 /* ------------------------------ get all User ------------------------------ */
 userController.getAllUsers = async (req, res, next) => {
-  const filter = {};
-  console.log("insideReq", req);
-
+  let filter = {};
+  console.log("insideReq", req.headers);
+  console.log("idUser", req.userId);
+  let filterId = req.userId;
+  if (filterId) filter = { _id: `${filterId}` };
   try {
     const listOfUser = await User.find(filter);
     sendResponse(
