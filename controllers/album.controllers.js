@@ -28,6 +28,7 @@ albumController.createAlbum = async (req, res, next) => {
 albumController.getAllAlbums = async (req, res, next) => {
   console.log("req", req);
   let { limit, page, filter } = req.query;
+
   page = parseInt(page) || 1;
   // page = JSON.parse(page) || 1;
   limit = parseInt(limit) || 10;
@@ -51,6 +52,26 @@ albumController.getAllAlbums = async (req, res, next) => {
     );
   } catch (err) {
     next(err);
+  }
+};
+
+/* ---------------------------- get single Album ---------------------------- */
+
+albumController.getOneAlbum = async (req, res, next) => {
+  const albumId = req.params;
+  console.log("albumId", albumId);
+  try {
+    const singleAlbum = await Album.findById(albumId);
+    sendResponse(
+      res,
+      200,
+      true,
+      { data: singleAlbum },
+      null,
+      "find Single Album success"
+    );
+  } catch (error) {
+    next(error);
   }
 };
 
@@ -159,8 +180,6 @@ albumController.getAllGenre = async (req, res, next) => {
 /* --------------------------------- export --------------------------------- */
 
 module.exports = albumController;
-
-
 
 // const [listAllAlbum, setListAllAlbum] = useState([]); //array rong
 // const [albumRating, setAlbumRating] = useState(null); //object rỗng

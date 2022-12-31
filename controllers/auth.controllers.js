@@ -27,11 +27,11 @@ authController.loginWithEmail = async (req, res, next) => {
       res,
       200,
       true,
-      { data: user, accessToken: accessToken },
+      { user: user, accessToken: accessToken },
       null,
       "Login successful"
     );
-  } catch (error) {
+  } catch (err) {
     next(err);
   }
 };

@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 /* ---------------------------- expressValidator ---------------------------- */
-const { body } = require("express-validator");
+const { body, param } = require("express-validator");
 const validators = require("../helpers/middlewares/validators.js");
 
 const {
@@ -11,7 +11,6 @@ const {
   getAllUsers,
 } = require("../controllers/user.controllers.js");
 const authentication = require("../helpers/middlewares/authentication.js");
-
 
 /* ---------------------------------- Read ---------------------------------- */
 /**
@@ -54,7 +53,14 @@ router.post(
  * @access login required
 
  */
-router.put("/:id", authentication.loginRequired, updateUserById);
+router.put(
+  "/:id",
+  authentication.loginRequired,
+  validators.validate([
+    param("id").exists().isString().custom(validators.checkObjectId()),
+  ]),
+  updateUserById
+);
 /* --------------------------------- Delete --------------------------------- */
 /**
  * @route DELETE api/user
@@ -62,6 +68,13 @@ router.put("/:id", authentication.loginRequired, updateUserById);
  * @access login required
 
  */
-router.delete("/:id", authentication.loginRequired, deleteUserById);
+router.delete(
+  "/:id",
+  authentication.loginRequired,
+  validators.validate([
+    param("id").exists().isString().custom(validators.checkObjectId()),
+  ]),
+  deleteUserById
+);
 
 module.exports = router;

@@ -7,6 +7,7 @@ const {
   updateAlbumById,
   getAllAlbums,
   updateManyAlbum,
+  getOneAlbum,
 } = require("../controllers/album.controllers.js");
 
 /* ---------------------------------- Read ---------------------------------- */
@@ -16,6 +17,15 @@ const {
  * @access public
  */
 router.get("/", getAllAlbums);
+
+/* ------------------------------ get one album ----------------------------- */
+/**
+ * @route GET api/album
+ * @description get list of albums
+ * @access public
+ */
+router.get("/:_id", getOneAlbum);
+
 /* --------------------------------- Create --------------------------------- */
 /**
  * @route POST api/album
