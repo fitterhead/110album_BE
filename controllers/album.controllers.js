@@ -28,7 +28,6 @@ albumController.createAlbum = async (req, res, next) => {
 albumController.getAllAlbums = async (req, res, next) => {
   console.log("req", req);
   let { limit, page, filter } = req.query;
-
   page = parseInt(page) || 1;
   // page = JSON.parse(page) || 1;
   limit = parseInt(limit) || 10;
@@ -40,7 +39,6 @@ albumController.getAllAlbums = async (req, res, next) => {
       "artistRef",
       "artistName"
     );
-
     listOfAlbum = listOfAlbum.slice(offset, offset + limit);
     sendResponse(
       res,

@@ -24,7 +24,7 @@ router.get("/", getAllAlbums);
  * @description get list of albums
  * @access public
  */
-router.get("/:_id", getOneAlbum);
+router.get("/findAlbumById/:_id", getOneAlbum);
 
 /* --------------------------------- Create --------------------------------- */
 /**

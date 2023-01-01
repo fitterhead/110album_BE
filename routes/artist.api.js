@@ -5,6 +5,7 @@ const {
   createArtist,
   updateArtistById,
   getAllArtists,
+  getOneArtist,
 } = require("../controllers/artist.controllers.js");
 
 /* ---------------------------------- Read ---------------------------------- */
@@ -14,6 +15,15 @@ const {
  * @access public
  */
 router.get("/", getAllArtists);
+
+/* ----------------------------- get One Artist ----------------------------- */
+/**
+ * @route GET api/artist
+ * @description get list of artists
+ * @access public
+ */
+router.get("/findArtistById/:_id", getOneArtist);
+
 /* --------------------------------- Create --------------------------------- */
 /**
  * @route POST api/artist

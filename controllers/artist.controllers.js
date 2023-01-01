@@ -57,6 +57,25 @@ artistController.getAllArtists = async (req, res, next) => {
   }
 };
 
+/* ----------------------------- get one artist ----------------------------- */
+artistController.getOneArtist = async (req, res, next) => {
+  const albumId = req.params;
+  console.log("albumId", albumId);
+  try {
+    const singleArtist = await Artist.findById(albumId);
+    sendResponse(
+      res,
+      200,
+      true,
+      { data: singleArtist },
+      null,
+      "find singleArtist success"
+    );
+  } catch (error) {
+    next(error);
+  }
+};
+
 /* ------------------------------- update Artist ------------------------------ */
 artistController.updateArtistById = async (req, res, next) => {
   //in real project you will getting id from req. For updating and deleting, it is recommended for you to use unique identifier such as _id to avoid duplication
