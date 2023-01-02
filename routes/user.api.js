@@ -9,6 +9,7 @@ const {
   createUser,
   updateUserById,
   getAllUsers,
+  getCurrentUser,
 } = require("../controllers/user.controllers.js");
 const authentication = require("../helpers/middlewares/authentication.js");
 
@@ -17,10 +18,19 @@ const authentication = require("../helpers/middlewares/authentication.js");
  * @route GET api/user
  * @description get list of users
  * @access login required
-
  */
 router.get("/", authentication.loginRequired, getAllUsers);
 // router.get("/", getAllUsers);
+
+/* ---------------------------- get current user ---------------------------- */
+
+/**
+ * @route GET api/user
+ * @description get list of users
+ * @access login required
+ */
+
+router.get("/myInfo", authentication.loginRequired, getCurrentUser);
 
 /* --------------------------------- Create --------------------------------- */
 /**

@@ -65,6 +65,28 @@ userController.getAllUsers = async (req, res, next) => {
   }
 };
 
+/* ---------------------------- get Current User ---------------------------- */
+userController.getCurrentUser = async (req, res, next) => {
+  let filter = {};
+  console.log("insideReq", req.headers);
+  console.log("idUser", req.userId);
+  let filterId = req.userId;
+  // if (filterId) filter = { _id: `${filterId}` };
+  try {
+    const listOfUser = await User.findById(filterId);
+    sendResponse(
+      res,
+      200,
+      true,
+      { user: listOfUser },
+      null,
+      "Find current User Success"
+    );
+  } catch (err) {
+    next(err);
+  }
+};
+
 /* ------------------------------- update User ------------------------------ */
 userController.updateUserById = async (req, res, next) => {
   //in real project you will getting id from req. For updating and deleting, it is recommended for you to use unique identifier such as _id to avoid duplication
