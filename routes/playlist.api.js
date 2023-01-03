@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const {
+  deleteAlbumOnPlaylist,
   deletePlaylistById,
   createPlaylist,
   getSinglePlaylist,
@@ -38,13 +39,35 @@ getSinglePlaylist;
 router.post("/", createPlaylist);
 /* --------------------------------- Update --------------------------------- */
 /**
- * @route PUT api/Playlist
- * @description create new Playlist
+ * @route PUT api/addAlbumToPlaylist
+ * @description add album to playlist
  * @access public
-* @example http://localhost:8000/playlist/63a7dcd9104af1c06b8b2482
-            req.body: {"_id":"63a3df92aba421e4cd7301b7"}
+* @example http://localhost:8000/playlist/addAlbumToPlaylist
+            {
+  "playlistId": "63b38f9d90a9c03e6f028c46",
+  "albumId": "63a3df92aba421e4cd7301bd"
+}
  */
-router.put("/:id", updatePlaylistById);
+router.put(
+  "/addAlbumToPlaylist",
+  authentication.loginRequired,
+  updatePlaylistById
+);
+
+/* ----------------------- delete album from playlist ----------------------- */
+/**
+ * @route PUT api/Playlist
+ * @description delete album from playlist
+ * @access public
+* @example http://localhost:8000/playlist/deleteAlbumFromPlaylist
+ 
+ */
+router.put(
+  "/deleteAlbumFromPlaylist",
+  authentication.loginRequired,
+  deleteAlbumOnPlaylist
+);
+
 /* --------------------------------- Delete --------------------------------- */
 /**
  * @route DELETE api/Playlist

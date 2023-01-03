@@ -48,14 +48,10 @@ playlistController.getAllPlaylists = async (req, res, next) => {
 
 /* --------------------------- get single playlist -------------------------- */
 playlistController.getSinglePlaylist = async (req, res, next) => {
-  // let filter = {};
   console.log("insideReq", req);
-  // let playlistId = {};
   let playlistParams = req.params;
   console.log("playlistParams", playlistParams);
   let filterId = req.userId;
-  // if (filterId) filter = { userRef: `${filterId}` };
-  // if (playlistParams) playlistId = playlistParams;
   try {
     const singlePlaylist = await Playlist.find({
       userRef: `${filterId}`,
@@ -76,17 +72,19 @@ playlistController.getSinglePlaylist = async (req, res, next) => {
 
 /* ------------------------------- update Playlist ------------------------------ */
 playlistController.updatePlaylistById = async (req, res, next) => {
-  const targetId = req.params;
+  // const albumAdded = req.params;
+  const currentUserId = req.userId;
   //63a7dcd9104af1c06b8b2482
-  const albumAdded = req.body;
-  console.log("albumAdded", req.body);
+  const { albumId, playlistId } = req.body;
+  console.log("albumAdded", currentUserId);
   //{"_id":"63a3df92aba421e4cd7301b6"}
-  const updateInfo = { $push: { albumRef: albumAdded } };
+  const updateInfo = { $push: { albumRef: albumId } };
+  // const updateInfo = { $pull: { albumRef: albumId } };
   const options = { new: true, upsert: true };
   try {
     //mongoose query
-    const updated = await Playlist.findByIdAndUpdate(
-      targetId.id,
+    const updated = await Playlist.findOneAndUpdate(
+      { _id: playlistId, userRef: currentUserId },
       updateInfo,
       options
     );
@@ -104,6 +102,34 @@ playlistController.updatePlaylistById = async (req, res, next) => {
   }
 };
 
+/* ----------------------- delete album from playlist ----------------------- */
+playlistController.deleteAlbumOnPlaylist = async (req, res, next) => {
+  // const albumAdded = req.params;
+  const currentUserId = req.userId;
+  const { albumId, playlistId } = req.body;
+
+  const updateInfo = { $pull: { albumRef: albumId } };
+  const options = { new: true, upsert: true };
+  try {
+    //mongoose query
+    const updated = await Playlist.findOneAndUpdate(
+      { _id: playlistId, userRef: currentUserId },
+      updateInfo,
+      options
+    );
+
+    sendResponse(
+      res,
+      200,
+      true,
+      { data: updated },
+      null,
+      "delete Playlist success"
+    );
+  } catch (err) {
+    next(err);
+  }
+};
 /* ------------------------------- delete Playlist ------------------------------ */
 playlistController.deletePlaylistById = async (req, res, next) => {
   //in real project you will getting id from req. For updating and deleting, it is recommended for you to use unique identifier such as _id to avoid duplication
