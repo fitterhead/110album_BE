@@ -24,11 +24,15 @@ playlistController.createPlaylist = async (req, res, next) => {
 
 /* ------------------------------ get all Playlist ------------------------------ */
 playlistController.getAllPlaylists = async (req, res, next) => {
-  const filter = {};
+  let filter = {};
   console.log("insideReq", req);
-
+  // let playlistId = {};
+  // let playlistParams = req.params;
+  // console.log("playlistParams", playlistParams);
+  let filterId = req.userId;
+  if (filterId) filter = { userRef: `${filterId}` };
   try {
-    const listOfPlaylist = await Playlist.find(filter).populate("albumRef");
+    const listOfPlaylist = await Playlist.find(filter);
     sendResponse(
       res,
       200,
@@ -36,6 +40,34 @@ playlistController.getAllPlaylists = async (req, res, next) => {
       { data: listOfPlaylist },
       null,
       "Find List of Playlist Success"
+    );
+  } catch (err) {
+    next(err);
+  }
+};
+
+/* --------------------------- get single playlist -------------------------- */
+playlistController.getSinglePlaylist = async (req, res, next) => {
+  // let filter = {};
+  console.log("insideReq", req);
+  // let playlistId = {};
+  let playlistParams = req.params;
+  console.log("playlistParams", playlistParams);
+  let filterId = req.userId;
+  // if (filterId) filter = { userRef: `${filterId}` };
+  // if (playlistParams) playlistId = playlistParams;
+  try {
+    const singlePlaylist = await Playlist.find({
+      userRef: `${filterId}`,
+      _id: `${playlistParams._id}`,
+    });
+    sendResponse(
+      res,
+      200,
+      true,
+      { data: singlePlaylist },
+      null,
+      "Find single Playlist Success"
     );
   } catch (err) {
     next(err);

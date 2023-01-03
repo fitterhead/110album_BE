@@ -6,6 +6,7 @@ const userSchema = mongoose.Schema(
     username: { type: String, required: true },
     email: { type: String, required: true },
     password: { type: String, required: true },
+    // playlistRef: [{ type: mongoose.SchemaTypes.ObjectId, ref: "Playlist" }],
   },
   { timestamps: true }
 );
@@ -21,7 +22,7 @@ userSchema.methods.generateToken = async function () {
   const accessToken = await jwt.sign({ _id: this._id }, JWT_SECRET_KEY, {
     expiresIn: "1d",
   });
-  return accessToken
+  return accessToken;
 };
 
 const User = mongoose.model("User", userSchema);
