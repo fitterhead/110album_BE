@@ -26,9 +26,6 @@ playlistController.createPlaylist = async (req, res, next) => {
 playlistController.getAllPlaylists = async (req, res, next) => {
   let filter = {};
   console.log("insideReq", req);
-  // let playlistId = {};
-  // let playlistParams = req.params;
-  // console.log("playlistParams", playlistParams);
   let filterId = req.userId;
   if (filterId) filter = { userRef: `${filterId}` };
   try {
@@ -72,14 +69,10 @@ playlistController.getSinglePlaylist = async (req, res, next) => {
 
 /* ------------------------------- update Playlist ------------------------------ */
 playlistController.updatePlaylistById = async (req, res, next) => {
-  // const albumAdded = req.params;
   const currentUserId = req.userId;
-  //63a7dcd9104af1c06b8b2482
   const { albumId, playlistId } = req.body;
   console.log("albumAdded", currentUserId);
-  //{"_id":"63a3df92aba421e4cd7301b6"}
   const updateInfo = { $push: { albumRef: albumId } };
-  // const updateInfo = { $pull: { albumRef: albumId } };
   const options = { new: true, upsert: true };
   try {
     //mongoose query
@@ -132,16 +125,18 @@ playlistController.deleteAlbumOnPlaylist = async (req, res, next) => {
 };
 /* ------------------------------- delete Playlist ------------------------------ */
 playlistController.deletePlaylistById = async (req, res, next) => {
-  //in real project you will getting id from req. For updating and deleting, it is recommended for you to use unique identifier such as _id to avoid duplication
-
-  // empty target mean delete nothing
-  console.log("insideReq", req);
-  const targetId = null;
-  //options allow you to modify query. e.g new true return lastest update of data
-  const options = { new: true };
+  const currentUserId = req.userId;
+  const playlistId = req.params._id;
+  console.log("insideReq", playlistId);
+  const targetId = { _id: playlistId, userRef: currentUserId };
+  console.log("targetId", targetId);
+  const options = { new: true, upsert: true };
   try {
-    //mongoose query
-    const updated = await Playlist.findByIdAndDelete(targetId, options);
+    const updated = await Playlist.findOneAndUpdate(
+      targetId,
+      { isDeleted: true },
+      options
+    );
 
     sendResponse(
       res,

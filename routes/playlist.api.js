@@ -70,10 +70,15 @@ router.put(
 
 /* --------------------------------- Delete --------------------------------- */
 /**
- * @route DELETE api/Playlist
+ * @route DELETE api/deletePlaylist
  * @description create new Playlist
- * @access public
+ * @access loginRequired
+ * @example http://localhost:8000/playlist/deletePlaylist/63b3bc9998a0ab18643debdc
  */
-router.delete("/:id", deletePlaylistById);
+router.delete(
+  "/deletePlaylist/:_id",
+  authentication.loginRequired,
+  deletePlaylistById
+);
 
 module.exports = router;
