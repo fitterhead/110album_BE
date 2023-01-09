@@ -31,8 +31,6 @@ router.get("/template/:test", async (req, res, next) => {
     next(err);
   }
 });
-const fooRouter = require("./foo.api.js");
-router.use("/foo", fooRouter);
 
 //create user model
 //create user Controller

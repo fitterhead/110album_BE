@@ -4,7 +4,6 @@ const Artist = require("../models/Artist.js");
 /* ------------------------------- create Artist ------------------------------ */
 const artistController = {};
 artistController.createArtist = async (req, res, next) => {
-  //in real project you will getting info from req
   const input = req.body;
   // const input = {
   //   artistName: "Radiohead",
@@ -32,9 +31,6 @@ artistController.createArtist = async (req, res, next) => {
 /* ------------------------------ get all Artist ------------------------------ */
 artistController.getAllArtists = async (req, res, next) => {
   let { page, limit, filter } = req.query;
-  // console.log("page",page)
-  // console.log("limit",limit)
-  // console.log("filter",filter)
   page = parseInt(page) || 1;
   limit = parseInt(limit) || 10;
   let newFilter = {};

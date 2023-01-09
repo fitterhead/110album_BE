@@ -147,18 +147,22 @@ userController.updateUserById = async (req, res, next) => {
 
 /* ------------------------------- delete user ------------------------------ */
 userController.deleteUserById = async (req, res, next) => {
-  console.log("insideReq", req);
-  const targetId = null;
+  const targetId = req.userId;
+  console.log("targetId", targetId);
   //options allow you to modify query. e.g new true return lastest update of data
-  const options = { new: true };
+  const options = { new: true, upsert: true };
   try {
-    const updated = await User.findByIdAndDelete(targetId, options);
+    const deleteUser = await User.findOneAndUpdate(
+      targetId,
+      { isDeleted: true },
+      options
+    );
 
     sendResponse(
       res,
       200,
       true,
-      { data: updated },
+      { data: deleteUser },
       null,
       "Delete User success"
     );

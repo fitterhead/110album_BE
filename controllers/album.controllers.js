@@ -4,7 +4,9 @@ const Album = require("../models/Album.js");
 /* ------------------------------- create Album ------------------------------ */
 const albumController = {};
 albumController.createAlbum = async (req, res, next) => {
-  //in real project you will getting info from req
+  const userId = req.userId;
+  console.log("userId", userId);
+  // if user.role = admin => created
   const input = req.body;
   try {
     //always remember to control your inputs
@@ -107,10 +109,7 @@ albumController.updateAlbumById = async (req, res, next) => {
 
 /* ------------------------------- delete Album ------------------------------ */
 albumController.deleteAlbumById = async (req, res, next) => {
-  //in real project you will getting id from req. For updating and deleting, it is recommended for you to use unique identifier such as _id to avoid duplication
-
-  // empty target mean delete nothing
-  const targetId = null;
+  const targetId = req.userId;
   //options allow you to modify query. e.g new true return lastest update of data
   const options = { new: true };
   try {
@@ -149,14 +148,67 @@ albumController.updateManyAlbum = async (req, res, next) => {
       null,
       "updateMany Album success"
     );
-  } catch (error) {
+  } catch (err) {
+    next(err);
+  }
+};
+
+/* ---------------------- get similar genre of an album --------------------- */
+// getSimilarGenre
+// const newStringArray = stringArray.map((e) => {
+//   return /^ + e + /;
+// });
+
+albumController.getSimilarGenre = async (req, res, next) => {
+  try {
+    let query = req.query.genre;
+    const stringArray = query.split(" ");
+    stringArray.push(query);
+    // stringArray [ 'Progressive', 'Rock', 'Progressive Rock' ]
+    const allAlbum = await Album.find(
+      { genre: { $in: stringArray } }
+      // { genre: { $regex: stringArray, $options: "i" } }
+      // {genre: { $regex: query, $options: "i" }}
+      // { genre: { $in: newStringArray } }
+    );
+    sendResponse(
+      res,
+      200,
+      true,
+      { data: allAlbum },
+      null,
+      "get album Similar genre success"
+    );
+  } catch (err) {
+    next(err);
+  }
+};
+
+/* -------------------- get all album of the same artist -------------------- */
+
+albumController.getAlbumOfArtist = async (req, res, next) => {
+  try {
+    let query = req.params;
+    // let query = "\b(rock|progressive rock)\b";
+    // console.log("query", typeof query);
+    // let newFilter = {};
+    const allAlbum = await Album.find({ artistRef: query.id });
+    sendResponse(
+      res,
+      200,
+      true,
+      { data: allAlbum },
+      null,
+      "get albums of the same artists success"
+    );
+  } catch (err) {
     next(err);
   }
 };
 
 /* ----------------------- get all genres of an artist ----------------------- */
 
-albumController.getAllGenre = async (req, res, next) => {
+albumController.getAllGenre = async (req, res, next) => { 
   const filter = req.body;
   // const artistId = req.params;
   // example: {"artistName":"Radiohead"}

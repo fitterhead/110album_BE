@@ -29,7 +29,7 @@ playlistController.getAllPlaylists = async (req, res, next) => {
   let filterId = req.userId;
   if (filterId) filter = { userRef: `${filterId}` };
   try {
-    const listOfPlaylist = await Playlist.find(filter);
+    const listOfPlaylist = await Playlist.find(filter).populate("albumRef");
     sendResponse(
       res,
       200,

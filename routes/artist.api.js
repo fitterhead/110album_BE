@@ -1,4 +1,5 @@
 const express = require("express");
+const authentication = require("../helpers/middlewares/authentication.js");
 const router = express.Router();
 const {
   deleteArtistById,
@@ -28,22 +29,22 @@ router.get("/findArtistById/:_id", getOneArtist);
 /**
  * @route POST api/artist
  * @description create new artist
- * @access public
+ * @access loginRequired
  */
-router.post("/", createArtist);
+router.post("/", authentication.loginRequired, createArtist);
 /* --------------------------------- Update --------------------------------- */
 /**
  * @route PUT api/artist
- * @description create new artist
- * @access public
+ * @description update info of Artist
+ * @access loginRequired
  */
-router.put("/:id", updateArtistById);
+router.put("/:id", authentication.loginRequired, updateArtistById);
 /* --------------------------------- Delete --------------------------------- */
 /**
  * @route DELETE api/artist
  * @description create new artist
- * @access public
+ * @access loginRequired
  */
-router.delete("/:id", deleteArtistById);
+router.delete("/:id", authentication.loginRequired, deleteArtistById);
 
 module.exports = router;

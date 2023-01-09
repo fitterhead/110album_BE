@@ -25,7 +25,7 @@ router.get("/", authentication.loginRequired, getAllPlaylists);
  * @route GET api/Playlist/:id
  * @description get single playlist
  * @access loginRequired
- * @example http://localhost:8000/playlist/63a7dcd9104af1c06b8b2482
+ * @example http://localhost:8000/playlist/63b38e1743c84446d10e8f20
  */
 router.get("/:_id", authentication.loginRequired, getSinglePlaylist);
 
@@ -34,14 +34,14 @@ getSinglePlaylist;
 /**
  * @route POST api/Playlist
  * @description create new Playlist
- * @access public
+ * @access loginRequired
  */
-router.post("/", createPlaylist);
+router.post("/", authentication.loginRequired, createPlaylist);
 /* --------------------------------- Update --------------------------------- */
 /**
  * @route PUT api/addAlbumToPlaylist
  * @description add album to playlist
- * @access public
+ * @access loginRequired
 * @example http://localhost:8000/playlist/addAlbumToPlaylist
             {
   "playlistId": "63b38f9d90a9c03e6f028c46",
@@ -58,7 +58,7 @@ router.put(
 /**
  * @route PUT api/Playlist
  * @description delete album from playlist
- * @access public
+ * @access loginRequired
 * @example http://localhost:8000/playlist/deleteAlbumFromPlaylist
  
  */
@@ -73,7 +73,7 @@ router.put(
  * @route DELETE api/deletePlaylist
  * @description create new Playlist
  * @access loginRequired
- * @example http://localhost:8000/playlist/deletePlaylist/63b3bc9998a0ab18643debdc
+ * @example http://localhost:8000/playlist/deletePlaylist/63b38e1743c84446d10e8f20
  */
 router.delete(
   "/deletePlaylist/:_id",

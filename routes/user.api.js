@@ -81,9 +81,9 @@ router.put(
 router.delete(
   "/:id",
   authentication.loginRequired,
-  validators.validate([
-    param("id").exists().isString().custom(validators.checkObjectId()),
-  ]),
+  // validators.validate([
+  //   param("id").exists().isString().custom(validators.checkObjectId()),
+  // ]),
   deleteUserById
 );
 

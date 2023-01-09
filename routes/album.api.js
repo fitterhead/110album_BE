@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
+const authentication = require("../helpers/middlewares/authentication.js");
 const {
+  getSimilarGenre,
   getAllGenre,
   deleteAlbumById,
   createAlbum,
@@ -8,6 +10,7 @@ const {
   getAllAlbums,
   updateManyAlbum,
   getOneAlbum,
+  getAlbumOfArtist,
 } = require("../controllers/album.controllers.js");
 
 /* ---------------------------------- Read ---------------------------------- */
@@ -15,6 +18,7 @@ const {
  * @route GET api/album
  * @description get list of albums
  * @access public
+ *  @API http://localhost:8000/album?limit=2&page=2
  */
 router.get("/", getAllAlbums);
 
@@ -23,6 +27,7 @@ router.get("/", getAllAlbums);
  * @route GET api/album
  * @description get list of albums
  * @access public
+@API http://localhost:8000/album/findAlbumById/63a3df92aba421e4cd7301bb
  */
 router.get("/findAlbumById/:_id", getOneAlbum);
 
@@ -30,23 +35,48 @@ router.get("/findAlbumById/:_id", getOneAlbum);
 /**
  * @route POST api/album
  * @description create new album
- * @access public
+ * @access loginRequired
+* @body   {
+    "ranking": 102,
+    "album": "Hay trao cho Anh",
+    "artistName": "Son Tung MTP",
+    "releaseDate": "Jan 2023"
+    "genre": "Pop",
+    
+  },
  */
-router.post("/", createAlbum);
+router.post("/", authentication.loginRequired, createAlbum);
 /* --------------------------------- Update --------------------------------- */
 /**
  * @route PUT api/album
  * @description create new album
- * @access public
+ * @access loginRequired
  */
-router.put("/:id", updateAlbumById);
+router.put("/:id", authentication.loginRequired, updateAlbumById);
 /* --------------------------------- Delete --------------------------------- */
 /**
  * @route DELETE api/album
  * @description create new album
+ * @access loginRequired
+ */
+router.delete("/:id", authentication.loginRequired, deleteAlbumById);
+
+/* --------------------- get albums with similar genres --------------------- */
+/**
+ * @route GET api/album/similarGenre
+ * @description get albums with similar genres
  * @access public
  */
-router.delete("/:id", deleteAlbumById);
+
+router.get("/getSimilarGenre", getSimilarGenre);
+
+/* ---------------------- get albums of the same artist --------------------- */
+/**
+ * @route GET api/album/getAlbumOfArtist/:id
+ * @description get albums with similar artist
+ * @access public
+ */
+router.get("/getAlbumOfArtist/:id", getAlbumOfArtist);
 
 /* ------------------------------- update many ------------------------------ */
 /**
