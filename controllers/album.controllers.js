@@ -28,25 +28,34 @@ albumController.createAlbum = async (req, res, next) => {
 
 /* ------------------------------ get all Album ------------------------------ */
 albumController.getAllAlbums = async (req, res, next) => {
-  console.log("req", req);
   let { limit, page, filter } = req.query;
   page = parseInt(page) || 1;
+
   // page = JSON.parse(page) || 1;
   limit = parseInt(limit) || 10;
   let newFilter = {};
   if (filter) newFilter = JSON.parse(filter);
   let offset = limit * (page - 1);
+
   try {
-    let listOfAlbum = await Album.find(newFilter).populate(
-      "artistRef",
-      "artistName"
-    );
-    listOfAlbum = listOfAlbum.slice(offset, offset + limit);
+    let listOfAlbum = await Album.find(newFilter)
+      .populate("artistRef", "artistName")
+      .limit(limit)
+      .skip(offset);
+    // listOfAlbum = listOfAlbum.slice(offset, offset + limit);
+
+    const countDocuments = await Album.countDocuments(newFilter);
+
     sendResponse(
       res,
       200,
       true,
-      { data: listOfAlbum },
+      {
+        data: listOfAlbum,
+        total: countDocuments,
+        limit: limit,
+        page: page,
+      },
       null,
       "Find List of Album Success"
     );
@@ -161,21 +170,27 @@ albumController.updateManyAlbum = async (req, res, next) => {
 
 albumController.getSimilarGenre = async (req, res, next) => {
   try {
-    let query = req.query.genre;
-    const stringArray = query.split(" ");
-    stringArray.push(query);
+    let { filter, limit, page } = req.query;
+    filter = JSON.parse(filter);
+    const { genre } = filter;
+    let stringArray = genre.split(" ");
+    stringArray.push(genre);
+    stringArray = stringArray.map((data) => {
+      return new RegExp(data);
+    });
+    const where = { genre: { $in: stringArray } };
     // stringArray [ 'Progressive', 'Rock', 'Progressive Rock' ]
     const allAlbum = await Album.find(
       { genre: { $in: stringArray } }
       // { genre: { $regex: stringArray, $options: "i" } }
-      // {genre: { $regex: query, $options: "i" }}npm run denpm r
+      // {genre: { $regex: query, $options: "i" }}npm run de
       // { genre: { $in: newStringArray } }
     );
     sendResponse(
       res,
       200,
       true,
-      { data: allAlbum },
+      { data: allAlbum, total: countDocuments },
       null,
       "get album Similar genre success"
     );
@@ -208,7 +223,7 @@ albumController.getAlbumOfArtist = async (req, res, next) => {
 
 /* ----------------------- get all genres of an artist ----------------------- */
 
-albumController.getAllGenre = async (req, res, next) => { 
+albumController.getAllGenre = async (req, res, next) => {
   const filter = req.body;
   // const artistId = req.params;
   // example: {"artistName":"Radiohead"}
