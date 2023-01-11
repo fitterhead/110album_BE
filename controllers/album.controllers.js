@@ -168,7 +168,7 @@ albumController.getSimilarGenre = async (req, res, next) => {
     const allAlbum = await Album.find(
       { genre: { $in: stringArray } }
       // { genre: { $regex: stringArray, $options: "i" } }
-      // {genre: { $regex: query, $options: "i" }}npm run de
+      // {genre: { $regex: query, $options: "i" }}npm run denpm r
       // { genre: { $in: newStringArray } }
     );
     sendResponse(
