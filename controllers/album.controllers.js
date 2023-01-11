@@ -28,20 +28,28 @@ albumController.createAlbum = async (req, res, next) => {
 
 /* ------------------------------ get all Album ------------------------------ */
 albumController.getAllAlbums = async (req, res, next) => {
-  let { limit, page, filter } = req.query;
+  let { limit, page, filter, filterName, input } = req.query;
   page = parseInt(page) || 1;
-
   // page = JSON.parse(page) || 1;
   limit = parseInt(limit) || 10;
+  console.log("filter", filter);
+  console.log("filterName", filterName);
+  console.log("input", input);
   let newFilter = {};
   if (filter) newFilter = JSON.parse(filter);
   let offset = limit * (page - 1);
-
+  const where = { [filterName]: { $regex: input, $options: "i" } };
+  console.log("where", where);
+  // let key = newFilter.keys();
+  // let newFilterName = filterName;
+  // console.log(newFilterName, "newFiltername");
+  // console.log("newFilter", key);
   try {
-    let listOfAlbum = await Album.find(newFilter)
+    let listOfAlbum = await Album.find(where)
       .populate("artistRef", "artistName")
       .limit(limit)
-      .skip(offset);
+      .skip(offset)
+
     // listOfAlbum = listOfAlbum.slice(offset, offset + limit);
 
     const countDocuments = await Album.countDocuments(newFilter);
@@ -170,22 +178,30 @@ albumController.updateManyAlbum = async (req, res, next) => {
 
 albumController.getSimilarGenre = async (req, res, next) => {
   try {
-    let { filter, limit, page } = req.query;
-    filter = JSON.parse(filter);
-    const { genre } = filter;
+    let {
+      // filter,
+      //  limit, page
+      genre,
+    } = req.query;
+    // filter = JSON.parse(filter);
+    // const { genre } = filter;
     let stringArray = genre.split(" ");
     stringArray.push(genre);
-    stringArray = stringArray.map((data) => {
-      return new RegExp(data);
-    });
+    // stringArray = stringArray.map((data) => {
+    //   return new RegExp(data);
+    // });
     const where = { genre: { $in: stringArray } };
     // stringArray [ 'Progressive', 'Rock', 'Progressive Rock' ]
-    const allAlbum = await Album.find(
-      { genre: { $in: stringArray } }
-      // { genre: { $regex: stringArray, $options: "i" } }
-      // {genre: { $regex: query, $options: "i" }}npm run de
-      // { genre: { $in: newStringArray } }
-    );
+    // const allAlbum = await Album.find(
+    // { genre: { $in: stringArray } }
+    // { genre: { $regex: stringArray, $options: "i" } }
+    // {genre: { $regex: query, $options: "i" }}npm run de
+    // { genre: { $in: newStringArray } }
+    // );
+
+    const allAlbum = await Album.find(where);
+    const countDocuments = await Album.countDocuments(where);
+
     sendResponse(
       res,
       200,
