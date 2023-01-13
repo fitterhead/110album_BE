@@ -30,11 +30,8 @@ albumController.createAlbum = async (req, res, next) => {
 albumController.getAllAlbums = async (req, res, next) => {
   let { limit, page, filter, filterName, input } = req.query;
   page = parseInt(page) || 1;
-  // page = JSON.parse(page) || 1;
+  page = JSON.parse(page) || 1;
   limit = parseInt(limit) || 10;
-  console.log("filter", filter);
-  console.log("filterName", filterName);
-  console.log("input", input);
   let newFilter = {};
   if (filter) newFilter = JSON.parse(filter);
   let offset = limit * (page - 1);
@@ -48,7 +45,7 @@ albumController.getAllAlbums = async (req, res, next) => {
     let listOfAlbum = await Album.find(where)
       .populate("artistRef", "artistName")
       .limit(limit)
-      .skip(offset)
+      .skip(offset);
 
     // listOfAlbum = listOfAlbum.slice(offset, offset + limit);
 
@@ -261,20 +258,3 @@ albumController.getAllGenre = async (req, res, next) => {
 /* --------------------------------- export --------------------------------- */
 
 module.exports = albumController;
-
-// const [listAllAlbum, setListAllAlbum] = useState([]); //array rong
-// const [albumRating, setAlbumRating] = useState(null); //object rỗng
-
-// useEffect(() => {
-//   if (listAlbum && listAlbum.length > 0) {
-//     // neu listALbum ton tai va co gia tri
-//     setListAllAlbum(listAlbum);
-//     if (listAllAlbum[listAllAlbum.length - 1]) {
-//       const rate = listAllAlbum[listAllAlbum.length - 1];
-//       //neu rate ton tai va data.data cua no co ton tai va data dau tien co gia tri
-//       if (rate?.data?.data && rate?.data?.data[0]) {
-//         setAlbumRating(rate?.data?.data[0]);
-//       }
-//     }
-//   }
-// }, [listAlbum]);

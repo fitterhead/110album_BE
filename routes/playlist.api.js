@@ -9,6 +9,8 @@ const {
   getAllPlaylists,
 } = require("../controllers/playlist.controllers.js");
 const authentication = require("../helpers/middlewares/authentication.js");
+const validators = require("../helpers/middlewares/validators.js");
+const { body, param } = require("express-validator");
 
 /* ---------------------------------- Read ---------------------------------- */
 /**
@@ -27,7 +29,14 @@ router.get("/", authentication.loginRequired, getAllPlaylists);
  * @access loginRequired
  * @example http://localhost:8000/playlist/63b38e1743c84446d10e8f20
  */
-router.get("/:_id", authentication.loginRequired, getSinglePlaylist);
+router.get(
+  "/:_id",
+  authentication.loginRequired,
+  validators.validate([
+    param("_id").exists().isString().custom(validators.checkObjectId),
+  ]),
+  getSinglePlaylist
+);
 
 getSinglePlaylist;
 /* --------------------------------- Create --------------------------------- */
@@ -78,6 +87,9 @@ router.put(
 router.delete(
   "/deletePlaylist/:_id",
   authentication.loginRequired,
+  validators.validate([
+    param("_id").exists().isString().custom(validators.checkObjectId),
+  ]),
   deletePlaylistById
 );
 

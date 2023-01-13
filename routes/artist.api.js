@@ -1,6 +1,8 @@
 const express = require("express");
 const authentication = require("../helpers/middlewares/authentication.js");
 const router = express.Router();
+const validators = require("../helpers/middlewares/validators.js");
+const { body, param } = require("express-validator");
 const {
   deleteArtistById,
   createArtist,
@@ -23,7 +25,13 @@ router.get("/", getAllArtists);
  * @description get list of artists
  * @access public
  */
-router.get("/findArtistById/:_id", getOneArtist);
+router.get(
+  "/findArtistById/:_id",
+  validators.validate([
+    param("_id").exists().isString().custom(validators.checkObjectId),
+  ]),
+  getOneArtist
+);
 
 /* --------------------------------- Create --------------------------------- */
 /**
@@ -31,20 +39,46 @@ router.get("/findArtistById/:_id", getOneArtist);
  * @description create new artist
  * @access loginRequired
  */
-router.post("/", authentication.loginRequired, createArtist);
+router.post(
+  "/",
+  validators.validate([
+    body("username", "Invalid name").exists().notEmpty(),
+    body("email", "Invalid email")
+      .exists()
+      .isEmail()
+      .normalizeEmail({ gmail_remove_dots: false }),
+    body("password", "Invalid password").exists().notEmpty(),
+  ]),
+  authentication.loginRequired,
+  createArtist
+);
 /* --------------------------------- Update --------------------------------- */
 /**
  * @route PUT api/artist
  * @description update info of Artist
  * @access loginRequired
  */
-router.put("/:id", authentication.loginRequired, updateArtistById);
+router.put(
+  "/:id",
+  authentication.loginRequired,
+  validators.validate([
+    param("_id").exists().isString().custom(validators.checkObjectId),
+  ]),
+  updateArtistById
+);
 /* --------------------------------- Delete --------------------------------- */
 /**
  * @route DELETE api/artist
- * @description create new artist
+ * @description delete artist
  * @access loginRequired
  */
-router.delete("/:id", authentication.loginRequired, deleteArtistById);
+router.delete(
+  "/:id",
+  authentication.loginRequired,
+  validators.validate([
+    param("_id").exists().isString().custom(validators.checkObjectId),
+  ]),
+  deleteArtistById
+);
 
 module.exports = router;
