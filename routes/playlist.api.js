@@ -15,10 +15,9 @@ const { body, param } = require("express-validator");
 /* ---------------------------------- Read ---------------------------------- */
 /**
  * @route GET api/Playlist
- * @description get list of Playlists, find playlist has userRef = userId 
+ * @description get list of Playlists, find playlist has userRef = userId
  * @access loginRequired
-* @example http://localhost:8000/playlist/63a7dcd9104af1c06b8b2482
-            http://localhost:8000/playlist/
+ * @example http://localhost:8000/playlist/
  */
 router.get("/", authentication.loginRequired, getAllPlaylists);
 
@@ -97,7 +96,7 @@ router.put(
   deleteAlbumOnPlaylist
 );
 
-/* --------------------------------- Delete --------------------------------- */
+/* ----------------------------- Delete playlist ---------------------------- */
 /**
  * @route DELETE api/deletePlaylist
  * @description create new Playlist

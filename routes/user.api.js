@@ -37,7 +37,6 @@ router.get("/myInfo", authentication.loginRequired, getCurrentUser);
  * @route POST api/user
  * @description create new user
  * @access login required
-
   * @req_body  {
   "username": "phi",
   "email": "morita@gmail.com",
@@ -61,6 +60,11 @@ router.post(
  * @route PUT api/user
  * @description create new user
  * @access login required
+* @req_body  {
+  "username": "phi",
+  "email": "morita@gmail.com",
+  "password": "123456"
+}
 
  */
 router.put(
@@ -74,8 +78,13 @@ router.put(
 /* --------------------------------- Delete --------------------------------- */
 /**
  * @route DELETE api/user
- * @description create new user
+ * @description delete user
  * @access login required
+* @req_body  {
+  "username": "phi",
+  "email": "morita@gmail.com",
+  "password": "123456"
+}
 
  */
 router.delete(

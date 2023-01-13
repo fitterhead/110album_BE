@@ -32,10 +32,6 @@ router.get("/template/:test", async (req, res, next) => {
   }
 });
 
-//create user model
-//create user Controller
-//create userRouter api
-
 /* ---------------------------- import userRouter --------------------------- */
 const userRouter = require("./user.api.js");
 router.use("/user", userRouter);
