@@ -43,19 +43,39 @@ getSinglePlaylist;
 /**
  * @route POST api/Playlist
  * @description create new Playlist
+* @body {
+    isDeleted: false
+    playlistName: "my playlist",
+    userRef: "akjdhaskjdhsajdh"
+  },
  * @access loginRequired
+
  */
-router.post("/", authentication.loginRequired, createPlaylist);
+router.post(
+  "/",
+  authentication.loginRequired,
+  validators.validate([
+    body("isDeleted", "Invalid isDeleted").exists().notEmpty(),
+    body("playlistName", "Invalid playlistName").exists().notEmpty(),
+    body("userRef", "Invalid userRef")
+      .exists()
+      .isString()
+      .custom(validators.checkObjectId),
+  ]),
+  createPlaylist
+);
 /* --------------------------------- Update --------------------------------- */
 /**
  * @route PUT api/addAlbumToPlaylist
  * @description add album to playlist
  * @access loginRequired
 * @example http://localhost:8000/playlist/addAlbumToPlaylist
-            {
-  "playlistId": "63b38f9d90a9c03e6f028c46",
-  "albumId": "63a3df92aba421e4cd7301bd"
-}
+* @body {
+    isDeleted: false
+    playlistName: "my playlist",
+    userRef: "akjdhaskjdhsajdh"
+  },
+
  */
 router.put(
   "/addAlbumToPlaylist",

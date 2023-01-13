@@ -38,16 +38,18 @@ router.get(
  * @route POST api/artist
  * @description create new artist
  * @access loginRequired
+ * @body {
+    artistName: "The 1975",
+    genre: "Rock",
+    biography: "good artist",
+  },
  */
 router.post(
   "/",
   validators.validate([
-    body("username", "Invalid name").exists().notEmpty(),
-    body("email", "Invalid email")
-      .exists()
-      .isEmail()
-      .normalizeEmail({ gmail_remove_dots: false }),
-    body("password", "Invalid password").exists().notEmpty(),
+    body("artistName", "Invalid artistName").exists().notEmpty(),
+    body("genre", "Invalid genre").exists().notEmpty(),
+    body("biography", "Invalid biography").exists().notEmpty(),
   ]),
   authentication.loginRequired,
   createArtist
@@ -57,6 +59,11 @@ router.post(
  * @route PUT api/artist
  * @description update info of Artist
  * @access loginRequired
+ * @body {
+    artistName: "The 1975",
+    genre: "Rock",
+    biography: "good artist",
+  },
  */
 router.put(
   "/:id",
@@ -71,6 +78,11 @@ router.put(
  * @route DELETE api/artist
  * @description delete artist
  * @access loginRequired
+ * @body {
+    artistName: "The 1975",
+    genre: "Rock",
+    biography: "good artist",
+  },
  */
 router.delete(
   "/:id",
