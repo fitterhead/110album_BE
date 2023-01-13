@@ -89,7 +89,7 @@ router.put(
 /* --------------------------------- Delete --------------------------------- */
 /**
  * @route DELETE api/album
- * @description create new album
+ * @description delete an album
  * @access loginRequired
 *  @body   {
     "ranking": 102 (higher than 101),
@@ -118,7 +118,7 @@ router.delete(
 
 router.get(
   "/getSimilarGenre",
-  // validators.validate([query().exists().isString()]),
+  validators.validate([query("genre").exists().isString()]),
   getSimilarGenre
 );
 
