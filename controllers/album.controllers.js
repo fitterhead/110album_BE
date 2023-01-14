@@ -172,30 +172,21 @@ albumController.updateManyAlbum = async (req, res, next) => {
 // const newStringArray = stringArray.map((e) => {
 //   return /^ + e + /;
 // });
+// filter = JSON.parse(filter);
+// const { genre } = filter;
 
 albumController.getSimilarGenre = async (req, res, next) => {
   try {
-    let {
-      // filter,
-      //  limit, page
-      genre,
-    } = req.query;
-    // filter = JSON.parse(filter);
-    // const { genre } = filter;
+    let { genre } = req.query;
+    //ex: genre = "Pop Rock"
     let stringArray = genre.split(" ");
+    //stringArray = ["Pop","Rock"]
     stringArray.push(genre);
+    //stringArray = ["Pop","Rock","Pop Rock"]
     // stringArray = stringArray.map((data) => {
     //   return new RegExp(data);
     // });
     const where = { genre: { $in: stringArray } };
-    // stringArray [ 'Progressive', 'Rock', 'Progressive Rock' ]
-    // const allAlbum = await Album.find(
-    // { genre: { $in: stringArray } }
-    // { genre: { $regex: stringArray, $options: "i" } }
-    // {genre: { $regex: query, $options: "i" }}npm run de
-    // { genre: { $in: newStringArray } }
-    // );
-
     const allAlbum = await Album.find(where);
     const countDocuments = await Album.countDocuments(where);
 

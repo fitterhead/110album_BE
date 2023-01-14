@@ -15,7 +15,7 @@ const authentication = require("../helpers/middlewares/authentication.js");
 
 /* ---------------------------------- Read ---------------------------------- */
 /**
- * @route GET api/user
+ * @route GET api/user/
  * @description get list of users
  * @access login required
  */
@@ -25,8 +25,8 @@ router.get("/", authentication.loginRequired, getAllUsers);
 /* ---------------------------- get current user ---------------------------- */
 
 /**
- * @route GET api/user
- * @description get list of users
+ * @route GET api/user/myInfo
+ * @description get your own account data
  * @access login required
  */
 
@@ -57,15 +57,14 @@ router.post(
 );
 /* --------------------------------- Update --------------------------------- */
 /**
- * @route PUT api/user
- * @description create new user
+ * @route PUT api/user/:id
+ * @description update user informations
  * @access login required
 * @req_body  {
   "username": "phi",
   "email": "morita@gmail.com",
   "password": "123456"
 }
-
  */
 router.put(
   "/:id",
@@ -77,15 +76,14 @@ router.put(
 );
 /* --------------------------------- Delete --------------------------------- */
 /**
- * @route DELETE api/user
+ * @route DELETE api/user/:id
  * @description delete user
  * @access login required
-* @req_body  {
+ * @req_body  {
   "username": "phi",
   "email": "morita@gmail.com",
   "password": "123456"
 }
-
  */
 router.delete(
   "/:id",

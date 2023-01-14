@@ -42,13 +42,12 @@ getSinglePlaylist;
 /**
  * @route POST api/Playlist
  * @description create new Playlist
-* @body {
+ * @body {
     isDeleted: false
     playlistName: "my playlist",
     userRef: "akjdhaskjdhsajdh"
   },
  * @access loginRequired
-
  */
 router.post(
   "/",
@@ -74,7 +73,6 @@ router.post(
     playlistName: "my playlist",
     userRef: "akjdhaskjdhsajdh"
   },
-
  */
 router.put(
   "/addAlbumToPlaylist",
@@ -87,8 +85,7 @@ router.put(
  * @route PUT api/Playlist
  * @description delete album from playlist
  * @access loginRequired
-* @example http://localhost:8000/playlist/deleteAlbumFromPlaylist
- 
+ * @example http://localhost:8000/playlist/deleteAlbumFromPlaylist
  */
 router.put(
   "/deleteAlbumFromPlaylist",

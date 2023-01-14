@@ -50,7 +50,6 @@ router.get(
     "artistName": "the 1975",
     "releaseDate": "Jan 2023"
     "genre": "Rock",
-    
   },
  */
 router.post(
@@ -96,8 +95,7 @@ router.put(
     "album": "Brief enquiry",
     "artistName": "the 1975",
     "releaseDate": "Jan 2023"
-    "genre": "Rock",
-    
+    "genre": "Rock",  
   },
  */
 router.delete(
