@@ -1,6 +1,6 @@
 const { AppError, sendResponse } = require("../helpers/utils");
 
-const { Order } = require("../helpers/utils");
+const Order = require("../models/Order");
 
 // create new order
 //receive body
@@ -34,6 +34,8 @@ orderController.getAllOrders = async (req, res, next) => {
 /* ---------------------------- create new order ---------------------------- */
 orderController.createOrder = async (req, res, next) => {
   const data = req.body;
+
+  console.log("data", data);
 
   try {
     const order = await Order.create(data);
