@@ -30,24 +30,27 @@ albumController.createAlbum = async (req, res, next) => {
 albumController.getAllAlbums = async (req, res, next) => {
   let { limit, page, filter, filterName, input } = req.query;
   page = parseInt(page) || 1;
-  page = JSON.parse(page) || 1;
+  // page = JSON.parse(page) || 1;
   limit = parseInt(limit) || 10;
   let newFilter = {};
   if (filter) newFilter = JSON.parse(filter);
   let offset = limit * (page - 1);
   const where = { [filterName]: { $regex: input, $options: "i" } };
-  console.log("where", where);
+  console.log("where 2", where);
   // let key = newFilter.keys();
   // let newFilterName = filterName;
   // console.log(newFilterName, "newFiltername");
   // console.log("newFilter", key);
+
+  //page = 2, limit = 10, offset = 10, slice (10, 10)
   try {
-    let listOfAlbum = await Album.find(where)
+    let listOfAlbum = await Album.sort(["ranking", 1])
+      .find(where)
       .populate("artistRef", "artistName")
       .limit(limit)
       .skip(offset);
 
-    // listOfAlbum = listOfAlbum.slice(offset, offset + limit);
+    listOfAlbum = listOfAlbum.slice(offset, offset + limit);
 
     const countDocuments = await Album.countDocuments(newFilter);
 
@@ -62,7 +65,7 @@ albumController.getAllAlbums = async (req, res, next) => {
         page: page,
       },
       null,
-      "Find List of Album Success"
+      "Find List of Album Success 2"
     );
   } catch (err) {
     next(err);
