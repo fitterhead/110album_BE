@@ -37,14 +37,17 @@ albumController.getAllAlbums = async (req, res, next) => {
   let offset = limit * (page - 1);
   const where = { [filterName]: { $regex: input, $options: "i" } };
   console.log("where 2", where);
+
   // let key = newFilter.keys();
   // let newFilterName = filterName;
   // console.log(newFilterName, "newFiltername");
   // console.log("newFilter", key);
 
   //page = 2, limit = 10, offset = 10, slice (10, 10)
+
   try {
-    let listOfAlbum = await Album.sort(["ranking", 1])
+    let listOfAlbum = await Album
+    // .sort(["ranking", 1])
       .find(where)
       .populate("artistRef", "artistName")
       .limit(limit)
