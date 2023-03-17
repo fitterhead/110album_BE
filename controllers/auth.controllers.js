@@ -8,12 +8,16 @@ authController.loginWithEmail = async (req, res, next) => {
 
   try {
     const { email, password } = req.body;
+
     /* ---------------------- 2. business Logic validation ---------------------- */
     const user = await User.findOne({ email }, "+password");
     if (!user) {
       throw new AppError(400, "Invalid Credential", "Login Error");
     }
 
+    if (user.isDeleted === true) {
+      throw new AppError(400, "Account not existed", "Login Error");
+    }
     /* ------------------------------- 3. Process ------------------------------- */
     const isMatch = await bcrypt.compare(password, user.password);
     console.log("ismatch", isMatch);

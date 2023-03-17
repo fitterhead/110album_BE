@@ -152,7 +152,7 @@ userController.deleteUserById = async (req, res, next) => {
   //options allow you to modify query. e.g new true return lastest update of data
   const options = { new: true, upsert: true };
   try {
-    const deleteUser = await User.findOneAndUpdate(
+    const deleteUser = await User.findByIdAndUpdate(
       targetId,
       { isDeleted: true },
       options
