@@ -53,7 +53,7 @@ router.post(
   "/",
   authentication.loginRequired,
   validators.validate([
-    body("isDeleted", "Invalid isDeleted").exists().notEmpty(),
+    // body("isDeleted", "Invalid isDeleted").exists().notEmpty(),
     body("playlistName", "Invalid playlistName").exists().notEmpty(),
     body("userRef", "Invalid userRef")
       .exists()

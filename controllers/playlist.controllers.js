@@ -4,7 +4,6 @@ const Playlist = require("../models/Playlist.js");
 /* ------------------------------- create Playlist ------------------------------ */
 const playlistController = {};
 playlistController.createPlaylist = async (req, res, next) => {
-  const playlistInput = req.body;
   try {
     if (!playlistInput)
       throw new AppError(402, "Bad Request", "Create Playlist Error");
@@ -101,13 +100,14 @@ playlistController.deleteAlbumOnPlaylist = async (req, res, next) => {
   const currentUserId = req.userId;
   const { albumId, playlistId } = req.body;
 
-  const updateInfo = { $pull: { albumRef: albumId } };
+  // const updateInfo = { $pull: { albumRef: albumId } };
   const options = { new: true, upsert: true };
   try {
     //mongoose query
     const updated = await Playlist.findOneAndUpdate(
       { _id: playlistId, userRef: currentUserId },
-      updateInfo,
+      // updateInfo,
+      { $pull: { albumRef: albumId } },
       options
     );
 
@@ -116,6 +116,8 @@ playlistController.deleteAlbumOnPlaylist = async (req, res, next) => {
       200,
       true,
       { data: updated },
+      { albumId: albumId },
+      { playlistId: playlistId },
       null,
       "delete Playlist success"
     );
@@ -143,12 +145,12 @@ playlistController.deletePlaylistById = async (req, res, next) => {
       200,
       true,
       { data: updated },
-      null,
-      "Delete Playlist success"
+        null,
+        "Delete Playlist success"
     );
   } catch (err) {
     next(err);
-  }
+    }
 };
 /* --------------------------------- export --------------------------------- */
 

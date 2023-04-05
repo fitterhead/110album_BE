@@ -3,6 +3,7 @@ const albumSchema = mongoose.Schema(
   {
     ranking: { type: Number, required: true },
     album: { type: String, required: true },
+    description: { type: String },
     artistName: { type: String, required: true },
     releaseDate: { type: String, required: true },
     genre: { type: String, required: true },

@@ -48,7 +48,7 @@ albumController.getAllAlbums = async (req, res, next) => {
   try {
     let listOfAlbum = await Album.find(where)
       .populate("artistRef", "artistName")
-      .sort({ "_id": 1 });
+      .sort({ _id: 1 });
 
     listOfAlbum = listOfAlbum.slice(offset, offset + limit);
     console.log(listOfAlbum, "listOfAlbum");
@@ -100,7 +100,7 @@ albumController.updateAlbumById = async (req, res, next) => {
   // empty target and info mean update nothing
   // const targetId = null;
   const targetId = req.params;
-  const updateInfo = { artistRef: "63a3ee99aba421e4cd730226" };
+  const updateInfo = req.body;
 
   //options allow you to modify query. e.g new true return lastest update of data
   const options = { new: true };
