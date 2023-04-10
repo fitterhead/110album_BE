@@ -32,7 +32,7 @@ router.get("/", getAllAlbums);
  * @API http://localhost:8000/album/findAlbumById/63a3df92aba421e4cd7301bb
  */
 router.get(
-  ":_id",
+  "/:_id",
   validators.validate([
     param("_id").exists().isString().custom(validators.checkObjectId),
   ]),
