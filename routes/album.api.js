@@ -127,7 +127,7 @@ router.get(
  * @access public
  */
 router.get(
-  "/getAlbumOfArtist/:id",
+  "/albumOfArtist/:id",
   validators.validate([
     param("id").exists().isString().custom(validators.checkObjectId),
   ]),
