@@ -32,7 +32,7 @@ router.get("/", getAllAlbums);
  * @API http://localhost:8000/album/findAlbumById/63a3df92aba421e4cd7301bb
  */
 router.get(
-  "/:_id",
+  "/result/:_id",
   validators.validate([
     param("_id").exists().isString().custom(validators.checkObjectId),
   ]),
@@ -122,12 +122,12 @@ router.get(
 
 /* ---------------------- get albums of the same artist --------------------- */
 /**
- * @route GET api/album/albumOfArtist/:id
+ * @route GET api/album/getAlbumOfArtist/:id
  * @description get albums with similar artist
  * @access public
  */
 router.get(
-  "/albumOfArtist/:id",
+  "/getAlbumOfArtist/:id",
   validators.validate([
     param("id").exists().isString().custom(validators.checkObjectId),
   ]),
