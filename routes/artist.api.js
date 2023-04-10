@@ -26,7 +26,7 @@ router.get("/", getAllArtists);
  * @access public
  */
 router.get(
-  "/findArtistById/:_id",
+  "/:_id",
   validators.validate([
     param("_id").exists().isString().custom(validators.checkObjectId),
   ]),
