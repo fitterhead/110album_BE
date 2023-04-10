@@ -1,92 +1,331 @@
-# Xuanphiart-be
+
+Top 110 albums of all time
+===
+
+## Table of Contents
+
+[TOC]
+
+## Introduction
+
+* Top 110 albums is a website that illustrates 100 highest rated music albums of all time, voted by music lovers using  rateyourmusic.com around the world. 
+* Users can see the list of 110 albums, ranked from the highest to lowest scores. When clicked or hovered, users can see detailed informations of each album, such as name, the artist created, release date, genre and so on.
+* Users can check the discography of the creator of the album, and albe to see other albums of the same artist featuring on the list.
+* Registered users can create their own playlist and be able to save their album in here. 
+* Registered users can read,edit information of their own account. Registered users can delete their account from the system. 
+*  Registered users can purchase albums through Paypal or credit card.
+
+## Appendix and FAQ
+
+:::info
+**Database source:** https://www.kaggle.com/datasets/michaelbryantds/top-5000-albums-of-all-time-rateyourmusiccom?select=rym_top_5000_all_time.csv
+**Checkout Library:** https://www.npmjs.com/package/@paypal/react-paypal-js
+:::
+
+User stories
+---
+### Authentication
+
+1. As a user, I can register a new account with an unique username, unique email and password.
+2. As a user, I can sign in with my email and password.
+3. As a user, my password will be encrypted and protected from being seen. 
+4. When logged in, user's account will be logged in persistently until user decides to logout
+5. After logged in, user can access their own account page, and see their created playlists.  
+ 
+### Users
+1. As a logged in user, I can see my personal information in my account page. I can delete my account. 
+2. As a logged in user, I can save an album I like in a playlist, or delete album I saved inside a playlist.
+3. As a logged in user, I can create one or multiple personal playlists.
+4. As a logged in user, I can add an album to a cart.
+6. As a logged in user, I can purchase album I added in my cart with paypal or credit card.
 
 
 
-## Getting started
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+### Lists
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+1. As a public user, on the homepage, I can see the ranking of 110 albums, sorts from highest to lowest rank scores.
+2. As a public user, I can see the name, the artist name, the genre and the release date of each album.
+3. As a public user, after clicking the album cover or the album name, I will be redirected to the album's detailed page.
+4. As a public user, after clicking the the artist name on the album on the homepage, I will be redirected to the album's artist page.
 
-## Add your files
+### Albums
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+1. As a public user, on the album page, I can see the enlarged album cover, I can read the introduction of the album, I can see the album's genre and a carousel of albums with similar genres.
+2. As a logged in user, on the album page, I can see the button to add the specific album into my created playlist.
+3. As an admin, I can add, edit, delete album on the database. 
 
+### Artists
+
+1. As a public user, on the artist page, I can see the enlarged portrait of the artist, I can read the biography of the artist, I can see the artist's music genre and a carousel of albums showing their discography.
+2. As an admin, I can add, edit, delete artist on the database.
+
+### Search
+
+1. As a public user, on the search page, I can search for an album by typing on the search box. I can narrow my search field by clicking a dropdown that render a list of specific fields.
+
+API endpoints
+---
+### Authentication API
+
+```console
+/**
+ * @route POST /auth/login
+ * @description login with email and pass
+ * @body {username,email,password}
+ * @access public
+ */
 ```
-cd existing_repo
-git remote add origin https://gitlab.com/coderschool1/xuanphiart-be.git
-git branch -M main
-git push -uf origin main
+
+### Users API
+
+```console
+/**
+ * @route GET api/user/
+ * @description get list of all users on the data
+ * @access login required
+ */
+```
+```console
+/**
+ * @route GET api/user/myInfo
+ * @description get your own account data
+ * @access login required
+ */
+```
+```console
+/**
+ * @route GET api/user/myInfo
+ * @description get your own account data
+ * @access login required
+ */
+```
+```console
+/**
+ * @route POST api/user
+ * @description create new user
+ * @access login required
+  * @req_body  {
+  "username": "phi",
+  "email": "morita@gmail.com",
+  "password": "123456"
+}
+ */
+```
+```console
+/**
+ * @route PUT api/user/:id
+ * @description update user informations
+ * @access login required
+* @req_body  {
+  "username": "phi",
+  "email": "morita@gmail.com",
+  "password": "123456"
+}
+ */
+```
+```console
+/**
+ * @route DELETE api/user/:id
+ * @description delete user
+ * @access login required
+ * @req_body  {
+  "username": "phi",
+  "email": "morita@gmail.com",
+  "password": "123456"
+}
+ */
+```
+### Playlist API
+
+```console
+/**
+ * @route GET api/playlist
+ * @description get list of Playlists,find playlist has userRef = userId
+ * @access loginRequired
+ * @example http://localhost:8000/playlist/
+ */
+```
+```console
+/**
+ * @route GET api/playlist/:id
+ * @description get single playlist
+ * @access loginRequired
+ * @example http://localhost:8000/playlist/63b38e1743c84446d10e8f20
+ */
+```
+```console
+/**
+ * @route POST api/Playlist
+ * @description create new Playlist
+ * @body {
+    isDeleted: false
+    playlistName: "my playlist",
+    userRef: "akjdhaskjdhsajdh"
+  },
+ * @access loginRequired
+ */
+```
+```console
+/**
+ * @route PUT api/addAlbumToPlaylist
+ * @description add album to playlist
+ * @access loginRequired
+* @example http://localhost:8000/playlist/addAlbumToPlaylist
+* @body {
+    isDeleted: false
+    playlistName: "my playlist",
+    userRef: "akjdhaskjdhsajdh"
+  },
+ */
+```
+```console
+/**
+ * @route PUT api/Playlist
+ * @description delete album from playlist
+ * @access loginRequired
+ * @example http://localhost:8000/playlist/deleteAlbumFromPlaylist
+ */
+```
+```console
+/**
+ * @route DELETE api/deletePlaylist
+ * @description create new Playlist
+ * @access loginRequired
+ * @example http://localhost:8000/playlist/deletePlaylist/63b38e1743c84446d10e8f20
+ */
 ```
 
-## Integrate with your tools
+### Albums API
+```console
+/**
+ * @route GET api/album
+ * @description get list of albums
+ * @access public
+ * @API http://localhost:8000/album?limit=2&page=2
+ */
+```
+```console
+/**
+ * @route GET api/album
+ * @description get list of albums
+ * @access public
+ * @API http://localhost:8000/album/63a3df92aba421e4cd7301bb
+ */
+```
+```console
+/**
+ * @route POST api/album
+ * @description create new album
+ * @access loginRequired
+ *  @body   {
+    "ranking": 102 (higher than 101),
+    "album": "Brief enquiry",
+    "artistName": "the 1975",
+    "releaseDate": "Jan 2023"
+    "genre": "Rock",
+  },
+ */
+```
+```console
+/**
+ * @route PUT api/album
+ * @description update infor of an album
+ * @access loginRequired
+*  @body   {
+    "ranking": 102 (higher than 101),
+    "album": "Brief enquiry",
+    "artistName": "the 1975",
+    "releaseDate": "Jan 2023"
+    "genre": "Rock",
+  },
+ */
+```
+```console
+/**
+ * @route DELETE api/album
+ * @description delete an album
+ * @access loginRequired
+*  @body   {
+    "ranking": 102 (higher than 101),
+    "album": "Brief enquiry",
+    "artistName": "the 1975",
+    "releaseDate": "Jan 2023"
+    "genre": "Rock",  
+  },
+ */
+```
+```console
+/**
+ * @route GET api/album/similarGenre
+ * @description get albums with similar genres
+ * @access public
+ */
+```
+```console
+/**
+ * @route GET api/album/albumOfArtist/:id
+ * @description get albums with similar artist
+ * @access public
+ */
+```
+### Artists API
 
-- [ ] [Set up project integrations](https://gitlab.com/coderschool1/xuanphiart-be/-/settings/integrations)
+```console
+/**
+ * @route GET api/artist
+ * @description get list of artists
+ * @access public
+ */
+```
+```console
+/**
+ * @route GET api/artist
+ * @description get list of artists
+ * @access public
+ */
+```
+```console
+/**
+ * @route POST api/artist
+ * @description create new artist
+ * @access loginRequired
+ * @body {
+    artistName: "The 1975",
+    genre: "Rock",
+    biography: "good artist",
+  },
+ */
+```
+```console
+/**
+ * @route PUT api/artist
+ * @description update info of Artist
+ * @access loginRequired
+ * @body {
+    artistName: "The 1975",
+    genre: "Rock",
+    biography: "good artist",
+  },
+ */
+```
+```console
+/**
+ * @route DELETE api/artist
+ * @description delete artist
+ * @access loginRequired
+ * @body {
+    artistName: "The 1975",
+    genre: "Rock",
+    biography: "good artist",
+  },
+ */
+```
 
-## Collaborate with your team
+Entity Relationship Diagram
+---
+![](https://i.imgur.com/dUV2qJk.png)
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Automatically merge when pipeline succeeds](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
 
-## Test and Deploy
 
-Use the built-in continuous integration in GitLab.
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
-
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
