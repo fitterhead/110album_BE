@@ -116,35 +116,6 @@ userController.updateUserById = async (req, res, next) => {
   }
 };
 
-// playlistController.updatePlaylistById = async (req, res, next) => {
-//   const targetId = req.params;
-//   //63a7dcd9104af1c06b8b2482
-//   const albumAdded = req.body;
-//   console.log("albumAdded", req.body);
-//   //{"_id":"63a3df92aba421e4cd7301b6"}
-//   const updateInfo = { $push: { albumRef: albumAdded } };
-//   const options = { new: true, upsert: true };
-//   try {
-//     //mongoose query
-//     const updated = await Playlist.findByIdAndUpdate(
-//       targetId.id,
-//       updateInfo,
-//       options
-//     );
-
-//     sendResponse(
-//       res,
-//       200,
-//       true,
-//       { data: updated },
-//       null,
-//       "Update Playlist success"
-//     );
-//   } catch (err) {
-//     next(err);
-//   }
-// };
-
 /* ------------------------------- delete user ------------------------------ */
 userController.deleteUserById = async (req, res, next) => {
   const targetId = req.userId;

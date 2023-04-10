@@ -74,7 +74,6 @@ playlistController.updatePlaylistById = async (req, res, next) => {
   const updateInfo = { $push: { albumRef: albumId } };
   const options = { new: true, upsert: true };
   try {
-    //mongoose query
     const updated = await Playlist.findOneAndUpdate(
       { _id: playlistId, userRef: currentUserId },
       updateInfo,
@@ -103,7 +102,6 @@ playlistController.deleteAlbumOnPlaylist = async (req, res, next) => {
   // const updateInfo = { $pull: { albumRef: albumId } };
   const options = { new: true, upsert: true };
   try {
-    //mongoose query
     const updated = await Playlist.findOneAndUpdate(
       { _id: playlistId, userRef: currentUserId },
       // updateInfo,

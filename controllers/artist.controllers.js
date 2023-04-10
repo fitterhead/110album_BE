@@ -74,13 +74,11 @@ artistController.getOneArtist = async (req, res, next) => {
 
 /* ------------------------------- update Artist ------------------------------ */
 artistController.updateArtistById = async (req, res, next) => {
-  //in real project you will getting id from req. For updating and deleting, it is recommended for you to use unique identifier such as _id to avoid duplication
-  //you will also get updateInfo from req
-  // empty target and info mean update nothing
+
   const targetId = null;
   const updateInfo = "";
 
-  //options allow you to modify query. e.g new true return lastest update of data
+
   const options = { new: true };
   try {
     //mongoose query
@@ -105,11 +103,9 @@ artistController.updateArtistById = async (req, res, next) => {
 
 /* ------------------------------- delete Artist ------------------------------ */
 artistController.deleteArtistById = async (req, res, next) => {
-  //in real project you will getting id from req. For updating and deleting, it is recommended for you to use unique identifier such as _id to avoid duplication
 
-  // empty target mean delete nothing
   const targetId = null;
-  //options allow you to modify query. e.g new true return lastest update of data
+
   const options = { new: true };
   try {
     //mongoose query

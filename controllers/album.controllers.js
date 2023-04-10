@@ -9,9 +9,7 @@ albumController.createAlbum = async (req, res, next) => {
   // if user.role = admin => created
   const input = req.body;
   try {
-    //always remember to control your inputs
     if (!input) throw new AppError(402, "Bad Request", "Create Album Error");
-    //mongoose query
     const created = await Album.create(input);
     sendResponse(
       res,
@@ -30,20 +28,11 @@ albumController.createAlbum = async (req, res, next) => {
 albumController.getAllAlbums = async (req, res, next) => {
   let { limit, page, filter, filterName, input } = req.query;
   page = parseInt(page) || 1;
-  // page = JSON.parse(page) || 1;
   limit = parseInt(limit) || 10;
   let newFilter = {};
   if (filter) newFilter = JSON.parse(filter);
   let offset = limit * (page - 1);
   const where = { [filterName]: { $regex: input, $options: "i" } };
-  // console.log("where 2", where);
-
-  // let key = newFilter.keys();
-  // let newFilterName = filterName;
-  // console.log(newFilterName, "newFiltername");
-  // console.log("newFilter", key);
-
-  //page = 2, limit = 10, offset = 10, slice (10, 10)
 
   try {
     let listOfAlbum = await Album.find(where)
@@ -95,17 +84,11 @@ albumController.getOneAlbum = async (req, res, next) => {
 
 /* ------------------------------- update Album ------------------------------ */
 albumController.updateAlbumById = async (req, res, next) => {
-  //in real project you will getting id from req. For updating and deleting, it is recommended for you to use unique identifier such as _id to avoid duplication
-  //you will also get updateInfo from req
-  // empty target and info mean update nothing
-  // const targetId = null;
   const targetId = req.params;
   const updateInfo = req.body;
 
-  //options allow you to modify query. e.g new true return lastest update of data
   const options = { new: true };
   try {
-    //mongoose query
     const updated = await Album.findByIdAndUpdate(
       targetId.id,
       updateInfo,
@@ -128,10 +111,8 @@ albumController.updateAlbumById = async (req, res, next) => {
 /* ------------------------------- delete Album ------------------------------ */
 albumController.deleteAlbumById = async (req, res, next) => {
   const targetId = req.userId;
-  //options allow you to modify query. e.g new true return lastest update of data
   const options = { new: true };
   try {
-    //mongoose query
     const updated = await Album.findByIdAndDelete(targetId, options);
 
     sendResponse(
@@ -156,8 +137,6 @@ albumController.updateManyAlbum = async (req, res, next) => {
   //filter receives the artist Name
   try {
     const updated = await Album.updateMany(filter, { artistRef: artistId.id });
-    //put http://localhost:8000/album/updateMany/63a3ee99aba421e4cd730226
-    // req.body: {"artistName":"Radiohead"}
     sendResponse(
       res,
       200,
