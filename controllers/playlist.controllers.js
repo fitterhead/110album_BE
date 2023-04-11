@@ -5,6 +5,8 @@ const Playlist = require("../models/Playlist.js");
 const playlistController = {};
 playlistController.createPlaylist = async (req, res, next) => {
   try {
+    const playlistInput = req.body;
+
     if (!playlistInput)
       throw new AppError(402, "Bad Request", "Create Playlist Error");
     const created = await Playlist.create(playlistInput);
@@ -143,12 +145,12 @@ playlistController.deletePlaylistById = async (req, res, next) => {
       200,
       true,
       { data: updated },
-        null,
-        "Delete Playlist success"
+      null,
+      "Delete Playlist success"
     );
   } catch (err) {
     next(err);
-    }
+  }
 };
 /* --------------------------------- export --------------------------------- */
 
