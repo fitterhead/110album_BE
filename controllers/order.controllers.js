@@ -17,12 +17,35 @@ const orderController = {};
 
 orderController.getAllOrders = async (req, res, next) => {
   try {
-    const orderList = await Order.find({});
+    let filter = {};
+    // console.log("insideReq", req.body);
+    // let filterId = req.body.userId;
+    let { userId } = req.query;
+
+    console.log("insideReq", userId);
+    if (userId) filter = { userId: `${userId}` };
+    const orderList = await Order.find(filter)
+      .populate("userId")
+      .populate("product.reference_id");
+    let productDetail = [];
+
+    orderList.map((e) => {
+      for (let i = 0; i < e.product.length; i++) {
+        productDetail.push(e.product[i]);
+      }
+    });
+
+    // const productDetailFinal = await productDetail.populate("reference_id");
+
+    // const productDetail = await
     sendResponse(
       res,
       200,
       true,
-      { data: orderList },
+      {
+        data: orderList,
+        // productItem: productDetail,
+      },
       null,
       "find all orders Success"
     );
@@ -45,7 +68,7 @@ orderController.createOrder = async (req, res, next) => {
       true,
       { data: order },
       null,
-      "create new order Success"
+      " success transaction recorded"
     );
   } catch (error) {
     next(error);
@@ -53,3 +76,5 @@ orderController.createOrder = async (req, res, next) => {
 };
 
 module.exports = orderController;
+
+/* ------------------------ find order of one person ------------------------ */

@@ -7,6 +7,7 @@ const userSchema = mongoose.Schema(
     email: { type: String, required: true },
     password: { type: String, required: true },
     isDeleted: { type: Boolean, required: true, default: false },
+    isAdmin: { type: Boolean },
     // playlistRef: [{ type: mongoose.SchemaTypes.ObjectId, ref: "Playlist" }],
   },
   { timestamps: true }

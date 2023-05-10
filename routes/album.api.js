@@ -13,6 +13,7 @@ const {
   updateManyAlbum,
   getOneAlbum,
   getAlbumOfArtist,
+  getSimilarGenreFromArray,
 } = require("../controllers/album.controllers.js");
 
 /* ---------------------------------- Read ---------------------------------- */
@@ -118,6 +119,18 @@ router.get(
   "/similarGenre",
   validators.validate([query("genre").exists().isString()]),
   getSimilarGenre
+);
+/* -------------- get albums with similar genres from an array -------------- */
+/**
+ * @route GET api/album/similarGenre
+ * @description get albums with similar genres
+ * @access public
+ */
+
+router.post(
+  "/genre",
+  validators.validate([body("genres").exists().notEmpty()]),
+  getSimilarGenreFromArray
 );
 
 /* ---------------------- get albums of the same artist --------------------- */

@@ -9,7 +9,7 @@ const userController = {};
 userController.createUser = async (req, res, next) => {
   /* -------------------------------- 1.getdata ------------------------------- */
   const signinInput = req.body;
-  let { email, password, username } = signinInput;
+  let { email, password, username,isAdmin } = signinInput;
 
   try {
     /* ---------------------- 2. business Logic validation ---------------------- */
@@ -22,7 +22,7 @@ userController.createUser = async (req, res, next) => {
     //bcrypt process
     const salt = await bcrypt.genSalt(10);
     password = await bcrypt.hash(password, salt);
-    const created = await User.create({ email, password, username });
+    const created = await User.create({ email, password, username,isAdmin });
 
     /* ------ tự động login người dùng sau khi đã tạo tài khoản thành công ------ */
     // mỗi lần cần lấy accesstoken thì chạy function để tạo token đó ra , rồi gửi token đó cho

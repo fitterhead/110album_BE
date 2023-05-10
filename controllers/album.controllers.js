@@ -186,6 +186,34 @@ albumController.getSimilarGenre = async (req, res, next) => {
   }
 };
 
+/* ------------------- get albums from an array of genres ------------------- */
+// getSimilarGenre
+// const newStringArray = stringArray.map((e) => {
+//   return /^ + e + /;
+// });
+// filter = JSON.parse(filter);
+// const { genre } = filter;
+
+albumController.getSimilarGenreFromArray = async (req, res, next) => {
+  try {
+    let { genres } = req.body;
+    const where = { genre: { $in: genres } };
+    const allAlbum = await Album.find(where);
+    const countDocuments = await Album.countDocuments(where);
+
+    sendResponse(
+      res,
+      200,
+      true,
+      { data: allAlbum, total: countDocuments },
+      null,
+      "get album Similar genre from Array success"
+    );
+  } catch (err) {
+    next(err);
+  }
+};
+
 /* -------------------- get all album of the same artist -------------------- */
 
 albumController.getAlbumOfArtist = async (req, res, next) => {
