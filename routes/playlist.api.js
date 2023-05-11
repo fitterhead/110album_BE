@@ -38,6 +38,25 @@ router.get(
 );
 
 getSinglePlaylist;
+
+
+/* --------------------------- get colection of playlist -------------------------- */
+/**
+ * @route GET api/Playlist/:id
+ * @description get single playlist
+ * @access loginRequired
+ * @example http://localhost:8000/playlist/63b38e1743c84446d10e8f20
+ */
+router.get(
+  "/:_id",
+  authentication.loginRequired,
+  validators.validate([
+    param("_id").exists().isString().custom(validators.checkObjectId),
+  ]),
+  getSinglePlaylist
+);
+
+getSinglePlaylist;
 /* --------------------------------- Create --------------------------------- */
 /**
  * @route POST api/Playlist

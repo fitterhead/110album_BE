@@ -1,6 +1,6 @@
 const { sendResponse, AppError } = require("../helpers/utils.js");
 const Playlist = require("../models/Playlist.js");
-
+const mongoose = require("mongoose");
 /* ------------------------------- create Playlist ------------------------------ */
 const playlistController = {};
 playlistController.createPlaylist = async (req, res, next) => {
@@ -28,7 +28,15 @@ playlistController.getAllPlaylists = async (req, res, next) => {
   let filter = {};
   console.log("insideReq", req);
   let filterId = req.userId;
-  if (filterId) filter = { userRef: `${filterId}` };
+  let { userId } = req.query;
+
+  console.log("user iddddddddd", userId);
+  // if (filterId) filter = { userRef: `${filterId}` };
+
+  if (userId) filter = { userRef: `${userId}` };
+
+  if (!userId && filterId) filter = { userRef: `${filterId}` };
+  console.log(filter, "filterrrrr");
   try {
     const listOfPlaylist = await Playlist.find(filter).populate("albumRef");
     sendResponse(
