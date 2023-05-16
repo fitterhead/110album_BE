@@ -62,7 +62,7 @@ playlistController.getSinglePlaylist = async (req, res, next) => {
     const singlePlaylist = await Playlist.find({
       userRef: `${filterId}`,
       _id: `${playlistParams._id}`,
-    });
+    }).populate("albumRef");
     sendResponse(
       res,
       200,
