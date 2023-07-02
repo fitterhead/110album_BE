@@ -1,7 +1,8 @@
 const { sendResponse, AppError } = require("../helpers/utils.js");
 const User = require("../models/User.js");
 const bcrypt = require("bcrypt");
-
+const Playlist = require("../models/Playlist.js");
+const mongoose = require("mongoose");
 /* -------------------------------------------------------------------------- */
 /*                                register user                               */
 /* -------------------------------------------------------------------------- */
@@ -9,7 +10,7 @@ const userController = {};
 userController.createUser = async (req, res, next) => {
   /* -------------------------------- 1.getdata ------------------------------- */
   const signinInput = req.body;
-  let { email, password, username,isAdmin } = signinInput;
+  let { email, password, username, isAdmin } = signinInput;
 
   try {
     /* ---------------------- 2. business Logic validation ---------------------- */
@@ -22,11 +23,15 @@ userController.createUser = async (req, res, next) => {
     //bcrypt process
     const salt = await bcrypt.genSalt(10);
     password = await bcrypt.hash(password, salt);
-    const created = await User.create({ email, password, username,isAdmin });
+    const created = await User.create({ email, password, username, isAdmin });
 
     /* ------ tự động login người dùng sau khi đã tạo tài khoản thành công ------ */
     // mỗi lần cần lấy accesstoken thì chạy function để tạo token đó ra , rồi gửi token đó cho
     //front end bằng sendResponse
+    // const likedSong = await Playlist.create({
+    //   playlistName: created.data._id,
+    //   userRef: created.data._id,
+    // });
     const accessToken = await created.generateToken();
 
     /* ------------------------------- 4.response ------------------------------- */
@@ -65,13 +70,34 @@ userController.getAllUsers = async (req, res, next) => {
   }
 };
 
+/* -------------------------------------------------------------------------- */
+/*                               get entire user                              */
+/* -------------------------------------------------------------------------- */
+
+userController.getTotalUser = async (req, res, next) => {
+  let filter = {};
+  try {
+    const listOfUser = await User.find(filter);
+    sendResponse(
+      res,
+      200,
+      true,
+      { data: listOfUser },
+      null,
+      "Find getTotalUser Success"
+    );
+  } catch (err) {
+    next(err);
+  }
+};
+
 /* ---------------------------- get Current User ---------------------------- */
 userController.getCurrentUser = async (req, res, next) => {
   let filter = {};
   console.log("insideReq", req.headers);
   console.log("idUser", req.userId);
   let filterId = req.userId;
-  // if (filterId) filter = { _id: `${filterId}` };
+  if (filterId) filter = { _id: `${filterId}` };
   try {
     const listOfUser = await User.findById(filterId);
     sendResponse(
@@ -88,26 +114,56 @@ userController.getCurrentUser = async (req, res, next) => {
 };
 
 /* ------------------------------- update User ------------------------------ */
+
 userController.updateUserById = async (req, res, next) => {
   const targetId = req.params;
-  const playlistAdded = req.body;
-  // const updateInfo = "";
-  //options allow you to modify query. e.g new true return lastest update of data
-  // const updateInfo = { $push: { playlistRef: playlistAdded } };
-  // const options = { new: true, upsert: true };
+  const { albumId, type, description } = req.body;
+
   try {
-    //mongoose query
-    const updated = await User.findByIdAndUpdate(
-      targetId.id,
-      updateInfo,
-      options
+    const user = await User.findById(targetId.id);
+    if (!user) {
+      return sendResponse(res, 404, false, null, "User not found");
+    }
+
+    const cartItemIndex = user.cart.findIndex(
+      (item) => item.reference_id.toString() === albumId
     );
+
+    if (cartItemIndex !== -1) {
+      // If the albumId exists in the cart
+      if (type === "minus") {
+        if (user.cart[cartItemIndex].amount === 1) {
+          // If the amount is 1, remove the cart item
+          user.cart.splice(cartItemIndex, 1);
+        } else {
+          // Decrease the amount by 1
+          user.cart[cartItemIndex].amount -= 1;
+          user.cart[cartItemIndex].price -= 19;
+        }
+      } else if (type === "plus") {
+        // Increase the amount by 1
+        user.cart[cartItemIndex].amount += 1;
+        user.cart[cartItemIndex].price += 19;
+      } else if (type === "delete") {
+        user.cart.splice(cartItemIndex, 1);
+      }
+    } else {
+      // If the albumId doesn't exist, add a new cart item
+      user.cart.push({
+        reference_id: albumId,
+        amount: 1,
+        price: 19,
+        description: description,
+      });
+    }
+
+    const updatedUser = await user.save();
 
     sendResponse(
       res,
       200,
       true,
-      { data: updated },
+      { data: updatedUser },
       null,
       "Update User success"
     );
@@ -119,7 +175,7 @@ userController.updateUserById = async (req, res, next) => {
 /* ------------------------------- delete user ------------------------------ */
 userController.deleteUserById = async (req, res, next) => {
   const targetId = req.userId;
-  console.log("targetId", targetId);
+  console.log(targetId, "target delete USer");
   //options allow you to modify query. e.g new true return lastest update of data
   const options = { new: true, upsert: true };
   try {
@@ -141,67 +197,76 @@ userController.deleteUserById = async (req, res, next) => {
     next(err);
   }
 };
-/* --------------------------------- export --------------------------------- */
 
-module.exports = userController;
+/* -------------------------------------------------------------------------- */
+/*                                    cart                                    */
+/* -------------------------------------------------------------------------- */
 
-/* ------------------------------- soft delete ------------------------------ */
+userController.getCartByUserId = async (req, res, next) => {
+  const targetId = req.userId;
+  try {
+    const userCart = await User.findById(targetId).populate(
+      "cart.reference_id"
+    );
 
-// carController.deleteCar = async (req, res, next) => {
-//   let { id } = req.params;
-//   const targetId = id || "";
-//   const options = { isEnabled: false };
-//   if (!targetId) next();
+    sendResponse(
+      res,
+      200,
+      true,
+      { data: userCart },
+      null,
+      "find cart of user success"
+    );
+  } catch (err) {
+    next(err);
+  }
+};
+
+/* ------------------------------- delete cart ------------------------------ */
+
+userController.deleteCart = async (req, res, next) => {
+  const targetId = req.body.userId;
+  console.log(targetId, "targetId");
+  try {
+    const userCart = await User.findByIdAndUpdate(
+      targetId,
+      {
+        $set: { cart: [] },
+      },
+      { new: true }
+    );
+
+    sendResponse(
+      res,
+      200,
+      true,
+      { data: userCart },
+      null,
+      "delete cart of user success"
+    );
+  } catch (err) {
+    next(err);
+  }
+};
+
+// userController.deleteCart = async (req, res, next) => {
+//   const targetId = req.userId;
 
 //   try {
-//     //mongoose query
-//     const updated = await Car.findByIdAndUpdate(targetId, options);
+//     console.log("useriDdddddd");
+//     // console.log(userId, "useriDdddddd");
 
-//     sendResponse(
-//       res,
-//       200,
-//       true,
-//       { Car: updated },
-//       null,
-//       "Delete Car Successfully!"
+//     const user = await User.findByIdAndUpdate(
+//       targetId,
+//       { $set: { cart: [] } },
+//       { new: true }
 //     );
+
+//     sendResponse(res, 200, true, { data: user }, null, "delete cart success");
 //   } catch (err) {
 //     next(err);
 //   }
 // };
-// module.exports = carController;
+/* --------------------------------- export --------------------------------- */
 
-/* ------------------------ browse album with filter ------------------------ */
-
-// **
-//  * @route GET API/task
-//  * @description Browse your tasks with filter allowance
-//  * @access private
-//  */
-
-// taskController.findTaskByFilter = async (req, res, next) => {
-//   try {
-//     const allowUpdate = [
-//       "name",
-//       "description",
-//       "status",
-//       "assignee",
-//       "isFinished",
-//       "assignee",
-//     ];
-//     const updates = req.query;
-//     const updateKeys = Object.keys(updates);
-//     const notAllow = updateKeys.filter((el) => !allowUpdate.includes(el));
-//     if (notAllow.length) {
-//       throw new AppError(401, "Bad request", "filter Input is not validated");
-//     }
-
-//     const findTaskByFilter = await Task.find(updates).sort([["createdAt", -1]]);
-//     if (Object.keys(findTaskByFilter).length === 0) {
-//       throw new AppError(401, "Bad request", "cant find filter");
-//     }
-//     sendResponse(res, 200, true, findTaskByFilter, null, "taskByFilterfound");
-//   } catch (error) {
-//     next(error);
-//   }
-// };
+module.exports = userController;

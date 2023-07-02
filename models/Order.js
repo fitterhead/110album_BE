@@ -7,6 +7,7 @@ const subdocumentSchema = mongoose.Schema({
   },
   description: { type: String },
   price: { type: String },
+  amount: { type: Number },
 });
 
 const orderSchema = mongoose.Schema(

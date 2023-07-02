@@ -55,5 +55,9 @@ router.use("/auth", authenRouter);
 
 const orderRouter = require("./order.api.js");
 router.use("/order", orderRouter);
+
+/* ------------------------------- songRouter ------------------------------- */
+const songRouter = require("./song.api.js");
+router.use("/song", songRouter);
 /* --------------------------------- export --------------------------------- */
 module.exports = router;

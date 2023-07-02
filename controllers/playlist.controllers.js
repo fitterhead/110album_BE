@@ -6,7 +6,6 @@ const playlistController = {};
 playlistController.createPlaylist = async (req, res, next) => {
   try {
     const playlistInput = req.body;
-
     if (!playlistInput)
       throw new AppError(402, "Bad Request", "Create Playlist Error");
     const created = await Playlist.create(playlistInput);
@@ -26,19 +25,37 @@ playlistController.createPlaylist = async (req, res, next) => {
 /* ------------------------------ get all Playlist ------------------------------ */
 playlistController.getAllPlaylists = async (req, res, next) => {
   let filter = {};
-  console.log("insideReq", req);
+  console.log("getAllPlaylists insideReq", req);
   let filterId = req.userId;
-  let { userId } = req.query;
+  let { userId, song } = req.query;
 
   console.log("user iddddddddd", userId);
   // if (filterId) filter = { userRef: `${filterId}` };
+  let songExisted = song?.toLowerCase() === "true" ? true : false;
+  if (userId)
+    filter = {
+      userRef: `${userId}`,
 
-  if (userId) filter = { userRef: `${userId}` };
+      // songExisted: songExisted,
+    };
 
-  if (!userId && filterId) filter = { userRef: `${filterId}` };
+  if (!userId && filterId)
+    filter = {
+      userRef: `${filterId}`,
+
+      // songExisted: songExisted,
+    };
   console.log(filter, "filterrrrr");
   try {
-    const listOfPlaylist = await Playlist.find(filter).populate("albumRef");
+    const listOfPlaylist = await Playlist.find(filter)
+      .populate("albumRef")
+      .populate({
+        path: "songRef",
+        populate: {
+          path: "albumRef",
+        },
+      });
+
     sendResponse(
       res,
       200,
@@ -79,14 +96,23 @@ playlistController.getSinglePlaylist = async (req, res, next) => {
 /* ------------------------------- update Playlist ------------------------------ */
 playlistController.updatePlaylistById = async (req, res, next) => {
   const currentUserId = req.userId;
-  const { albumId, playlistId } = req.body;
+  const { albumId, playlistId, songId } = req.body;
+
   console.log("albumAdded", currentUserId);
-  const updateInfo = { $push: { albumRef: albumId } };
+  let updateInfo = { $addToSet: { albumRef: albumId } };
+  if (!albumId && songId) {
+    updateInfo = {
+      $addToSet: { songRef: songId },
+      $set: { songExisted: true },
+    };
+  }
+
   const options = { new: true, upsert: true };
   try {
     const updated = await Playlist.findOneAndUpdate(
       { _id: playlistId, userRef: currentUserId },
       updateInfo,
+      // songExisted,
       options
     );
 
@@ -95,6 +121,7 @@ playlistController.updatePlaylistById = async (req, res, next) => {
       200,
       true,
       { data: updated },
+
       null,
       "Update Playlist success"
     );
@@ -107,7 +134,7 @@ playlistController.updatePlaylistById = async (req, res, next) => {
 playlistController.deleteAlbumOnPlaylist = async (req, res, next) => {
   // const albumAdded = req.params;
   const currentUserId = req.userId;
-  const { albumId, playlistId } = req.body;
+  const { albumId, playlistId, songId } = req.body;
 
   // const updateInfo = { $pull: { albumRef: albumId } };
   const options = { new: true, upsert: true };
@@ -115,6 +142,7 @@ playlistController.deleteAlbumOnPlaylist = async (req, res, next) => {
     const updated = await Playlist.findOneAndUpdate(
       { _id: playlistId, userRef: currentUserId },
       // updateInfo,
+
       { $pull: { albumRef: albumId } },
       options
     );
@@ -160,6 +188,39 @@ playlistController.deletePlaylistById = async (req, res, next) => {
     next(err);
   }
 };
+
+/* ------------------------ delete song from playlist ----------------------- */
+
+playlistController.deleteSongOnPlaylist = async (req, res, next) => {
+  // const albumAdded = req.params;
+  const currentUserId = req.userId;
+  const { playlistId, songId } = req.body;
+
+  // const updateInfo = { $pull: { albumRef: albumId } };
+  const options = { new: true, upsert: true };
+  try {
+    const updated = await Playlist.findOneAndUpdate(
+      { _id: playlistId, userRef: currentUserId },
+      // updateInfo,
+
+      { $pull: { songRef: songId } },
+      options
+    );
+
+    sendResponse(
+      res,
+      200,
+      true,
+      { data: updated },
+      // { playlistId: playlistId },
+      null,
+      "delete song on Playlist success"
+    );
+  } catch (err) {
+    next(err);
+  }
+};
+
 /* --------------------------------- export --------------------------------- */
 
 module.exports = playlistController;

@@ -35,9 +35,6 @@ orderController.getAllOrders = async (req, res, next) => {
       }
     });
 
-    // const productDetailFinal = await productDetail.populate("reference_id");
-
-    // const productDetail = await
     sendResponse(
       res,
       200,
@@ -58,7 +55,7 @@ orderController.getAllOrders = async (req, res, next) => {
 orderController.createOrder = async (req, res, next) => {
   const data = req.body;
 
-  console.log("data", data);
+  console.log("data from frontend", data);
 
   try {
     const order = await Order.create(data);
@@ -68,7 +65,7 @@ orderController.createOrder = async (req, res, next) => {
       true,
       { data: order },
       null,
-      " success transaction recorded"
+      "success transaction recorded backend"
     );
   } catch (error) {
     next(error);

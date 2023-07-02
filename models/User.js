@@ -1,6 +1,17 @@
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
+
+const subdocumentSchema = mongoose.Schema({
+  reference_id: {
+    type: mongoose.SchemaTypes.ObjectId,
+    ref: "Album",
+  },
+  description: { type: String },
+  price: { type: Number, default: 19 },
+  amount: { type: Number, default: 1 },
+});
+
 const userSchema = mongoose.Schema(
   {
     username: { type: String, required: true },
@@ -8,7 +19,7 @@ const userSchema = mongoose.Schema(
     password: { type: String, required: true },
     isDeleted: { type: Boolean, required: true, default: false },
     isAdmin: { type: Boolean },
-    // playlistRef: [{ type: mongoose.SchemaTypes.ObjectId, ref: "Playlist" }],
+    cart: [subdocumentSchema],
   },
   { timestamps: true }
 );

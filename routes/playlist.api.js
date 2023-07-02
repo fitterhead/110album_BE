@@ -7,6 +7,7 @@ const {
   getSinglePlaylist,
   updatePlaylistById,
   getAllPlaylists,
+  deleteSongOnPlaylist,
 } = require("../controllers/playlist.controllers.js");
 const authentication = require("../helpers/middlewares/authentication.js");
 const validators = require("../helpers/middlewares/validators.js");
@@ -39,13 +40,14 @@ router.get(
 
 getSinglePlaylist;
 
-
 /* --------------------------- get colection of playlist -------------------------- */
 /**
  * @route GET api/Playlist/:id
  * @description get single playlist
  * @access loginRequired
  * @example http://localhost:8000/playlist/63b38e1743c84446d10e8f20
+http://localhost:8000/playlist?song=true
+
  */
 router.get(
   "/:_id",
@@ -127,5 +129,14 @@ router.delete(
   ]),
   deletePlaylistById
 );
+
+/* ------------------------- delete song on playlist ------------------------ */
+/**
+ * @route PUT api/Playlist
+ * @description delete album from playlist
+ * @access loginRequired
+ * @example http://localhost:8000/playlist/song
+ */
+router.put("/song", authentication.loginRequired, deleteSongOnPlaylist);
 
 module.exports = router;
