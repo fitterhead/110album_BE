@@ -221,6 +221,38 @@ playlistController.deleteSongOnPlaylist = async (req, res, next) => {
   }
 };
 
+/* ------------------------ upload image to playlist ------------------------ */
+
+playlistController.uploadPlayListImage = async (req, res, next) => {
+  const currentUserId = req.userId;
+  const { playlistImageUrl, playlistId } = req.body;
+
+  console.log("image added", currentUserId);
+  console.log("image added 2 ", playlistImageUrl);
+  let updateInfo = { $set: { playlistImage: playlistImageUrl } };
+
+  const options = { new: true, upsert: true };
+  try {
+    const updated = await Playlist.findOneAndUpdate(
+      { _id: playlistId, userRef: currentUserId },
+      updateInfo,
+      options
+    );
+
+    sendResponse(
+      res,
+      200,
+      true,
+      { data: updated },
+
+      null,
+      "Update Playlist Image success"
+    );
+  } catch (err) {
+    next(err);
+  }
+};
+
 /* --------------------------------- export --------------------------------- */
 
 module.exports = playlistController;

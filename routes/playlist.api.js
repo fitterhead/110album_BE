@@ -8,6 +8,7 @@ const {
   updatePlaylistById,
   getAllPlaylists,
   deleteSongOnPlaylist,
+  uploadPlayListImage,
 } = require("../controllers/playlist.controllers.js");
 const authentication = require("../helpers/middlewares/authentication.js");
 const validators = require("../helpers/middlewares/validators.js");
@@ -138,5 +139,15 @@ router.delete(
  * @example http://localhost:8000/playlist/song
  */
 router.put("/song", authentication.loginRequired, deleteSongOnPlaylist);
+
+/* -------------------------- add image to playlist ------------------------- */
+
+/**
+ * @route PUT api/Playlist
+ * @description delete album from playlist
+ * @access loginRequired
+ * @example http://localhost:8000/playlist/song
+ */
+router.put("/image", authentication.loginRequired, uploadPlayListImage);
 
 module.exports = router;
